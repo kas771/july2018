@@ -353,7 +353,7 @@ std::cout<<"number of sshits = "<<n<<", number of matches = "<<_hitmap.size()<<s
 
   std::vector<art::Ptr<recob::Track>> my_trks; //vector of pointers to tracks in case of 1 shower 1 track events
   std::vector<art::Ptr<recob::Shower>> my_shrs; //vector of pointers to tracks in case of 1 shower 1 track events
-  std::vector<double[3]> my_vtxs; //vector of pointers to the first element in a double for the vertex XYZ position (3D)
+  std::vector<double*> my_vtxs; //vector of pointers to the first element in a double for the vertex XYZ position (3D)
  
  // std::cout<<"number of PFParticles: "<<PFPHandle->size()<<std::endl;
   //for each PFP
@@ -533,7 +533,7 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
  * Look at remaining shrhits in ROI
  *
  */
-
+/*
 //for each vertex position in the vector
 for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	double xyz_pos[3] = {};
@@ -546,7 +546,7 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	Y = xyz_pos[1];
 	std::cout<<"the vertex XYZ = "<<X<<Y<<std::endl;
 }//loop over vertices
-
+*/
 
  auto particleHandle
       = event.getValidHandle<std::vector<simb::MCParticle>>
