@@ -445,7 +445,7 @@ std::cout<<"number of sshits = "<<n<<", number of matches = "<<_hitmap.size()<<s
         	
 		//store the vertex postion
 		my_vtxs.push_back(xyz);
-        //	std::cout<<"vertex pos xyz = "<<_xpos<<", "<<_ypos<<", "<< _zpos<<std::endl;
+        	std::cout<<"vertex pos xyz = "<<_xpos<<", "<<_ypos<<", "<< _zpos<<std::endl;
 
 	} //for each vertex
 }//for each PFP
@@ -533,20 +533,30 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
  * Look at remaining shrhits in ROI
  *
  */
-/*
+
+//double* xyz_pos = 0;
+	
 //for each vertex position in the vector
 for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
-	double xyz_pos[3] = {};
-	xyz_pos =  *(my_vtxs.at(vtx_index));
-	//double X = xyz_pos;
-	//double Y = ++xyz_pos;
+	//std::cout<<"looking at vertex # "<<vtx_index<<std::endl;
+	double* xyz_pos = my_vtxs.at(vtx_index);
 	
-	double X, Y; 
-	X = xyz_pos[0];
-	Y = xyz_pos[1];
-	std::cout<<"the vertex XYZ = "<<X<<Y<<std::endl;
+	//double X, Y, Z; 
+	double X = *(xyz_pos);
+	double Y = *(++xyz_pos);
+	double Z = *(++xyz_pos);
+	std::cout<<"the vertex XYZ = "<<X<<", "<<Y<<", "<<Z<<std::endl;
+	
+	//get the wire and time for each plane
+	//grabbed this from lareventdisplay/EventDisplay/RecoBaseDrawer.cxx
+	//int plane = 0;
+	//double wire = geo->WireCoordinate(Y, Z, plane, rawOpt->fTPC, rawOpt->fCryostat);
+        //double time = detprop->ConvertXToTicks(X, plane, rawOpt->fTPC, rawOpt->fCryostat);
+
+	//do ROI finding in each plane
+	
 }//loop over vertices
-*/
+
 
  auto particleHandle
       = event.getValidHandle<std::vector<simb::MCParticle>>
