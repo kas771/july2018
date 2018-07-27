@@ -1,0 +1,15 @@
+BEGIN_PROLOG
+
+SSNetTest: {
+ module_type      : "SSNetTest"  
+ SimulationLabel: "largeant"
+ HitLabel:        ["ssnethitmaker:shrhit90", "gaushit"]
+ #PxThresholdLoe  : 0.5
+ #PxThresholdHigh : 0.9
+ PxType          : 0
+ ClusterLabel:    "trajcluster" #fuzzycluster
+ PDGcode:          13
+ BinSize:          0.3
+}
+
+END_PROLOG

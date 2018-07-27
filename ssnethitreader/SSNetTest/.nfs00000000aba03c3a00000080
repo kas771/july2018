@@ -1,0 +1,4 @@
+%MSG-i MF_INIT_OK:  lar 06-Jul-2018 14:22:54 CDT JobSetup
+Messagelogger initialization complete.
+%MSG
+06-Jul-2018 14:23:03 CDT  Initiating request to open input file "/pnfs/uboone/scratch/users/ksutton/v06_26_01_17/test_supera/0601/data/9647004_0/SSNetHits.root"

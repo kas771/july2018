@@ -1,0 +1,357 @@
+%MSG-i MF_INIT_OK:  lar 13-Jul-2018 13:04:43 CDT JobSetup
+Messagelogger initialization complete.
+%MSG
+13-Jul-2018 13:04:44 CDT  Initiating request to open input file "/pnfs/uboone/mc/uboone/reconstructed/prod_v06_26_07/prodgenie_bnb_nu_cosmic_uboone_reco/reco/prodgenie_bnb_nu_cosmic_uboone_0_20170422T170051_gen2_6359dce5-a9d4-4003-9bc9-1d5afd9b8bec_20171231T160825_reco1_20171231T163849_reco2_20180212T072008_cali.root"
+13-Jul-2018 13:04:47 CDT  Opened input file "/pnfs/uboone/mc/uboone/reconstructed/prod_v06_26_07/prodgenie_bnb_nu_cosmic_uboone_reco/reco/prodgenie_bnb_nu_cosmic_uboone_0_20170422T170051_gen2_6359dce5-a9d4-4003-9bc9-1d5afd9b8bec_20171231T160825_reco1_20171231T163849_reco2_20180212T072008_cali.root"
+Begin processing the 1st record. run: 5 subRun: 5849 event: 292401 at 13-Jul-2018 13:04:47 CDT
+PRINCIPAL TYPE: Event
+PROCESS NAME | MODULE_LABEL................... | PRODUCT INSTANCE NAME | DATA PRODUCT TYPE....................................................... | .SIZE
+GenieGen.... | generator...................... | ..................... | std::vector<simb::GTruth>............................................... | ....1
+GenieGen.... | TriggerResults................. | ..................... | art::TriggerResults..................................................... | ....-
+GenieGen.... | generator...................... | ..................... | std::vector<sim::BeamGateInfo>.......................................... | ....1
+GenieGen.... | corsika........................ | ..................... | std::vector<simb::MCTruth>.............................................. | ....1
+GenieGen.... | rns............................ | ..................... | std::vector<art::RNGsnapshot>........................................... | ....2
+GenieGen.... | generator...................... | ..................... | std::vector<simb::MCTruth>.............................................. | ....1
+GenieGen.... | generator...................... | ..................... | art::Assns<simb::MCTruth,simb::MCFlux,void>............................. | ....-
+GenieGen.... | generator...................... | ..................... | std::vector<simb::MCFlux>............................................... | ....1
+GenieGen.... | generator...................... | ..................... | art::Assns<simb::MCTruth,simb::GTruth,void>............................. | ....-
+G4.......... | largeant....................... | ..................... | std::vector<sim::SimPhotons>............................................ | ...32
+G4.......... | rns............................ | ..................... | std::vector<art::RNGsnapshot>........................................... | ....2
+G4.......... | TriggerResults................. | ..................... | art::TriggerResults..................................................... | ....-
+G4.......... | mcreco......................... | ..................... | std::vector<sim::MCShower>.............................................. | ..165
+G4.......... | largeant....................... | ..................... | std::vector<simb::MCParticle>........................................... | 16150
+G4.......... | largeant....................... | ..................... | std::vector<sim::AuxDetSimChannel>...................................... | .1168
+G4.......... | mcreco......................... | ..................... | std::vector<sim::MCTrack>............................................... | ..115
+G4.......... | largeant....................... | ..................... | art::Assns<simb::MCTruth,simb::MCParticle,void>......................... | ....-
+G4.......... | largeant....................... | ..................... | std::vector<sim::SimChannel>............................................ | ....?
+Detsim...... | TriggerResults................. | ..................... | art::TriggerResults..................................................... | ....-
+Detsim...... | swtrigger...................... | ..................... | raw::ubdaqSoftwareTriggerData........................................... | ....-
+Detsim...... | daq............................ | ..................... | std::vector<raw::RawDigit>.............................................. | ....?
+Detsim...... | optfem......................... | ..................... | std::vector<optdata::FIFOChannel>....................................... | ..638
+Detsim...... | pmtreadout..................... | NUMILogicPulse....... | std::vector<raw::OpDetWaveform>......................................... | ....2
+Detsim...... | optdigitizer................... | ..................... | optdata::ChannelDataGroup............................................... | ....?
+Detsim...... | pmtreadout..................... | OpdetBeamHighGain.... | std::vector<raw::OpDetWaveform>......................................... | ...32
+Detsim...... | pmtreadout..................... | BNBLogicPulse........ | std::vector<raw::OpDetWaveform>......................................... | ....2
+Detsim...... | triggersim..................... | ..................... | std::vector<raw::Trigger>............................................... | ....1
+Detsim...... | pmtreadout..................... | Uncategorized........ | std::vector<raw::OpDetWaveform>......................................... | ....0
+Detsim...... | pmtreadout..................... | OpdetCosmicHighGain.. | std::vector<raw::OpDetWaveform>......................................... | ..321
+Detsim...... | pmtreadout..................... | OpdetBeamLowGain..... | std::vector<raw::OpDetWaveform>......................................... | ..103
+Detsim...... | pmtreadout..................... | OpdetCosmicLowGain... | std::vector<raw::OpDetWaveform>......................................... | ....0
+Detsim...... | pmtreadout..................... | StrobeLogicPulse..... | std::vector<raw::OpDetWaveform>......................................... | ....0
+Detsim...... | pmtreadout..................... | FlasherLogicPulse.... | std::vector<raw::OpDetWaveform>......................................... | ....0
+Detsim...... | pmtreadout..................... | UnspecifiedLogic..... | std::vector<raw::OpDetWaveform>......................................... | ...24
+Detsim...... | optdigitizer................... | ..................... | std::vector<sim::BeamGateInfo>.......................................... | ....1
+Detsim...... | rns............................ | ..................... | std::vector<art::RNGsnapshot>........................................... | ....2
+Detsim...... | optfem......................... | ..................... | std::vector<optdata::PMTTrigger>........................................ | ....0
+McRecoStage1 | saturation..................... | OpdetCosmicHighGain.. | std::vector<raw::OpDetWaveform>......................................... | ..321
+McRecoStage1 | opflashBeam.................... | ..................... | std::vector<recob::OpFlash>............................................. | ....1
+McRecoStage1 | rns............................ | ..................... | std::vector<art::RNGsnapshot>........................................... | ....1
+McRecoStage1 | simpleFlashBeamLowPE........... | ..................... | std::vector<recob::OpFlash>............................................. | ....1
+McRecoStage1 | opflashBeam.................... | ..................... | art::Assns<recob::OpFlash,recob::OpHit,void>............................ | ....-
+McRecoStage1 | caldata........................ | ..................... | art::Assns<raw::RawDigit,recob::Wire,void>.............................. | ....-
+McRecoStage1 | saturation..................... | OpdetBeamHighGain.... | std::vector<raw::OpDetWaveform>......................................... | ...32
+McRecoStage1 | ophitBeam...................... | ..................... | std::vector<recob::OpHit>............................................... | ..264
+McRecoStage1 | caldata........................ | ..................... | std::vector<recob::Wire>................................................ | .8256
+McRecoStage1 | gaushit........................ | ..................... | art::Assns<raw::RawDigit,recob::Hit,void>............................... | ....-
+McRecoStage1 | eventweight.................... | ..................... | std::vector<evwgh::MCEventWeight>....................................... | ....1
+McRecoStage1 | TriggerResults................. | ..................... | art::TriggerResults..................................................... | ....-
+McRecoStage1 | gaushitTruthMatch.............. | ..................... | art::Assns<recob::Hit,simb::MCParticle,anab::BackTrackerHitMatchingData> | ....-
+McRecoStage1 | wcNoiseFilter.................. | ..................... | std::vector<raw::RawDigit>.............................................. | ....?
+McRecoStage1 | simpleFlashCosmic.............. | ..................... | std::vector<recob::OpFlash>............................................. | ...27
+McRecoStage1 | simpleFlashBeam................ | ..................... | std::vector<recob::OpFlash>............................................. | ....1
+McRecoStage1 | caldata........................ | ..................... | std::vector<raw::SparseRawDigit>........................................ | .8256
+McRecoStage1 | opflashCosmic.................. | ..................... | art::Assns<recob::OpFlash,recob::OpHit,void>............................ | ....-
+McRecoStage1 | ophitCosmic.................... | ..................... | std::vector<recob::OpHit>............................................... | ..396
+McRecoStage1 | simpleFlashBeam................ | ..................... | art::Assns<recob::OpHit,recob::OpFlash,void>............................ | ....-
+McRecoStage1 | gaushit........................ | ..................... | art::Assns<recob::Wire,recob::Hit,void>................................. | ....-
+McRecoStage1 | simpleFlashBeamLowPE........... | ..................... | art::Assns<recob::OpHit,recob::OpFlash,void>............................ | ....-
+McRecoStage1 | opflashCosmic.................. | ..................... | std::vector<recob::OpFlash>............................................. | ...51
+McRecoStage1 | caldataFull.................... | ..................... | art::Assns<raw::RawDigit,recob::Wire,void>.............................. | ....-
+McRecoStage1 | caldataFull.................... | ..................... | std::vector<recob::Wire>................................................ | .8256
+McRecoStage1 | caldata........................ | ..................... | art::Assns<recob::Wire,raw::SparseRawDigit,void>........................ | ....-
+McRecoStage1 | simpleFlashCosmic.............. | ..................... | art::Assns<recob::OpHit,recob::OpFlash,void>............................ | ....-
+McRecoStage1 | gaushit........................ | ..................... | std::vector<recob::Hit>................................................. | 17456
+McRecoStage2 | pandoraCosmicKalmanTrackpid.... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pandoraNupid................... | ..................... | std::vector<anab::ParticleID>........................................... | ...21
+McRecoStage2 | pandoraNuPMA................... | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraNuKHit.................. | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pmtrack........................ | ..................... | std::vector<recob::Vertex>.............................................. | ...39
+McRecoStage2 | pandoraCosmiccalo.............. | ..................... | std::vector<anab::Calorimetry>.......................................... | ..153
+McRecoStage2 | pandoraCosmicFlashTag.......... | ..................... | std::vector<anab::CosmicTag>............................................ | ...51
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::SpacePoint>.......................................... | .3185
+McRecoStage2 | pandoraCosmicT0Reco............ | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | trajcluster.................... | ..................... | std::vector<recob::Vertex>.............................................. | ...55
+McRecoStage2 | pandoraCosmicKalmanTrack....... | ..................... | art::Assns<recob::Track,recob::Hit,recob::TrackHitMeta>................. | ....-
+McRecoStage2 | pandoraCosmicKHitT0RecoLoose... | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::PCAxis>.............................................. | ....1
+McRecoStage2 | pandoraNuKalmanTrack........... | ..................... | std::vector<std::vector<recob::TrackFitHitInfo> >....................... | ....7
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::SpacePoint>.......................................... | 17007
+McRecoStage2 | trajcluster.................... | ..................... | art::Assns<recob::Cluster,recob::Hit,void>.............................. | ....-
+McRecoStage2 | pandoraCosmicKalmanTrackcalo... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::PFParticle,recob::Cluster,void>....................... | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::Cluster,recob::Hit,void>.............................. | ....-
+McRecoStage2 | trajcluster.................... | ..................... | std::vector<recob::EndPoint2D>.......................................... | ...14
+McRecoStage2 | pmtrack........................ | kink................. | std::vector<recob::Vertex>.............................................. | ....0
+McRecoStage2 | pmtrackMCSMu................... | ..................... | std::vector<recob::MCSFitResult>........................................ | ...43
+McRecoStage2 | pandoraNuPMA................... | ..................... | art::Assns<recob::Track,recob::SpacePoint,void>......................... | ....-
+McRecoStage2 | pandoraCosmicHitRemoval........ | ..................... | art::Assns<recob::Wire,recob::Hit,void>................................. | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::PFParticle>.......................................... | ...13
+McRecoStage2 | TriggerResults................. | ..................... | art::TriggerResults..................................................... | ....-
+McRecoStage2 | pandoraNuKalmanTrackFlashMatch. | ..................... | std::vector<anab::CosmicTag>............................................ | ....7
+McRecoStage2 | pandoraNuKHit.................. | ..................... | art::Assns<recob::Track,recob::Hit,recob::TrackHitMeta>................. | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::Shower,recob::PCAxis,void>............................ | ....-
+McRecoStage2 | pandoraNuKHitcalo.............. | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | pandoraCosmicKHit.............. | ..................... | art::Assns<recob::SpacePoint,recob::Hit,void>........................... | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::Seed>................................................ | .3146
+McRecoStage2 | pandoraNuKHit.................. | ..................... | art::Assns<recob::Track,recob::SpacePoint,void>......................... | ....-
+McRecoStage2 | pandoraCosmicKalmanTrack....... | ..................... | art::Assns<recob::Hit,recob::SpacePoint,void>........................... | ....-
+McRecoStage2 | pandoraNuKalmanShowercalo...... | ..................... | std::vector<anab::Calorimetry>.......................................... | ....3
+McRecoStage2 | pandoraCosmicT0RecoBeam........ | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pmtrackpid..................... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pandoraCosmicT0Reco............ | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pandoraCosmicKHittag........... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | rns............................ | ..................... | std::vector<art::RNGsnapshot>........................................... | ....0
+McRecoStage2 | trajcluster.................... | ..................... | art::Assns<recob::PFParticle,recob::Vertex,void>........................ | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::PFParticle,recob::SpacePoint,void>.................... | ....-
+McRecoStage2 | pmtrack........................ | ..................... | art::Assns<recob::Vertex,recob::Track,void>............................. | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::Vertex>.............................................. | ...13
+McRecoStage2 | pandoraNuKalmanTrackcalo....... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | pandoraNuKalmanTrackFlashMatch. | ..................... | art::Assns<recob::Hit,anab::CosmicTag,void>............................. | ....-
+McRecoStage2 | pandoraNuKalmanShower.......... | ..................... | art::Assns<recob::Hit,recob::SpacePoint,void>........................... | ....-
+McRecoStage2 | pmtrack........................ | kink................. | art::Assns<recob::Track,recob::Vertex,void>............................. | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::SpacePoint,recob::Hit,void>........................... | ....-
+McRecoStage2 | pandoraCosmicKalmanTrack....... | ..................... | std::vector<std::vector<recob::TrackFitHitInfo> >....................... | ...51
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::Seed>................................................ | 15928
+McRecoStage2 | pandoraCosmicKHit.............. | ..................... | art::Assns<recob::Track,recob::SpacePoint,void>......................... | ....-
+McRecoStage2 | trajcluster.................... | ..................... | std::vector<recob::Cluster>............................................. | ..219
+McRecoStage2 | pandoraNucalo.................. | ..................... | std::vector<anab::Calorimetry>.......................................... | ...21
+McRecoStage2 | pandoraNupid................... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pandoraCosmicT0RecoLoose....... | ..................... | std::vector<anab::T0>................................................... | ....6
+McRecoStage2 | pmtrack........................ | node................. | std::vector<recob::Vertex>.............................................. | ....0
+McRecoStage2 | pandoraCosmicKalmanTrack....... | ..................... | std::vector<recob::Track>............................................... | ...51
+McRecoStage2 | pandoraNuPMA................... | ..................... | art::Assns<recob::Vertex,recob::Track,void>............................. | ....-
+McRecoStage2 | pmtrackT0Reco.................. | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pmtrackpid..................... | ..................... | std::vector<anab::ParticleID>........................................... | ..129
+McRecoStage2 | pandoraNuKHit.................. | ..................... | art::Assns<recob::SpacePoint,recob::Hit,void>........................... | ....-
+McRecoStage2 | pandoraNuPMA................... | ..................... | art::Assns<recob::Track,recob::Hit,recob::TrackHitMeta>................. | ....-
+McRecoStage2 | pmtracktag..................... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraNuKHitpid............... | ..................... | std::vector<anab::ParticleID>........................................... | ...18
+McRecoStage2 | pandoraNuContTag............... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmicMCSMu............. | ..................... | std::vector<recob::MCSFitResult>........................................ | ...51
+McRecoStage2 | pandoraTrackPFPartMatch........ | ..................... | art::Assns<recob::Track,recob::PFParticle,void>......................... | ....-
+McRecoStage2 | pandoraNuPMAcalo............... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | trajcluster.................... | ..................... | art::Assns<recob::Wire,recob::Hit,void>................................. | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::PCAxis>.............................................. | ...63
+McRecoStage2 | pmtrackContTag................. | ..................... | std::vector<anab::CosmicTag>............................................ | ...43
+McRecoStage2 | pandoraNuKalmanShower.......... | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pandoraCosmicKHitT0RecoLoose... | ..................... | std::vector<anab::T0>................................................... | ....6
+McRecoStage2 | pandoraCosmicpid............... | ..................... | std::vector<anab::ParticleID>........................................... | ..153
+McRecoStage2 | pandoraNuPMA................... | kink................. | art::Assns<recob::Track,recob::Vertex,void>............................. | ....-
+McRecoStage2 | pandoraNuKalmanTrack........... | ..................... | art::Assns<recob::Hit,recob::SpacePoint,void>........................... | ....-
+McRecoStage2 | pandoraNuKalmanTracktag........ | ..................... | std::vector<anab::CosmicTag>............................................ | ....7
+McRecoStage2 | pandoraNuKalmanShowerFlashMatch | ..................... | std::vector<anab::CosmicTag>............................................ | ....1
+McRecoStage2 | pmtrackT0RecoBeam.............. | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pandoraCosmicFlashTag.......... | ..................... | art::Assns<anab::CosmicTag,recob::Track,void>........................... | ....-
+McRecoStage2 | pandoraNuContTag............... | ..................... | std::vector<anab::CosmicTag>............................................ | ....7
+McRecoStage2 | crHitRemovalTruthMatch......... | ..................... | art::Assns<recob::Hit,simb::MCParticle,anab::BackTrackerHitMatchingData> | ....-
+McRecoStage2 | pandoraNuKalmanTracktag........ | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmicHitRemoval........ | ..................... | art::Assns<raw::RawDigit,recob::Hit,void>............................... | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::PFParticle,recob::PCAxis,void>........................ | ....-
+McRecoStage2 | pandoraCosmicContTag........... | ..................... | std::vector<anab::CosmicTag>............................................ | ...51
+McRecoStage2 | pmtrackT0RecoLoose............. | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pandoraCosmicKHit.............. | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pandoraCosmicKHitT0Reco........ | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::PFParticle,recob::Shower,void>........................ | ....-
+McRecoStage2 | pmtrack........................ | ..................... | std::vector<recob::Track>............................................... | ...43
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::PFParticle,recob::Vertex,void>........................ | ....-
+McRecoStage2 | pandoraCosmicKHitT0RecoBeam.... | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::PFParticle,recob::Seed,void>.......................... | ....-
+McRecoStage2 | pandoraNuKalmanShowerpid....... | ..................... | std::vector<anab::ParticleID>........................................... | ....3
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::PFParticle,recob::Cluster,void>....................... | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::Track>............................................... | ...51
+McRecoStage2 | pmtrack........................ | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::Cluster>............................................. | ..276
+McRecoStage2 | pmtrackT0RecoLoose............. | ..................... | std::vector<anab::T0>................................................... | ....2
+McRecoStage2 | pandoraNuPMAtag................ | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::PFParticle,recob::Vertex,void>........................ | ....-
+McRecoStage2 | trajcluster.................... | ..................... | art::Assns<recob::Cluster,recob::Vertex,unsigned short>................. | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::PFParticle,recob::SpacePoint,void>.................... | ....-
+McRecoStage2 | pandoraNuPMApid................ | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pandoraCosmicKHitPFPart........ | ..................... | std::vector<anab::CosmicTag>............................................ | ..114
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraCosmicKHitT0RecoLoose... | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pandoraNuKalmanShowerFlashMatch | ..................... | art::Assns<recob::Hit,anab::CosmicTag,void>............................. | ....-
+McRecoStage2 | pmtrackT0Reco.................. | ..................... | std::vector<anab::T0>................................................... | ....2
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::Cluster,recob::Hit,void>.............................. | ....-
+McRecoStage2 | pmtrack........................ | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pandoraCosmicKHit.............. | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraCosmicKHitT0Reco........ | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pandoraNutag................... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmicKHitPFPart........ | ..................... | art::Assns<anab::CosmicTag,recob::Track,void>........................... | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::Vertex>.............................................. | ..114
+McRecoStage2 | pandoraCosmictag............... | ..................... | std::vector<anab::CosmicTag>............................................ | ...51
+McRecoStage2 | pmtrackT0RecoBeam.............. | ..................... | std::vector<anab::T0>................................................... | ....0
+McRecoStage2 | pandoraNuKHit.................. | ..................... | std::vector<recob::SpacePoint>.......................................... | ..467
+McRecoStage2 | pandoraNuKalmanTrack........... | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraNuKalmanTrackpid........ | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pmtrack........................ | ..................... | art::Assns<recob::SpacePoint,recob::Hit,void>........................... | ....-
+McRecoStage2 | pandoraCosmicKHittag........... | ..................... | std::vector<anab::CosmicTag>............................................ | ...28
+McRecoStage2 | trajcluster.................... | ..................... | std::vector<recob::PFParticle>.......................................... | ...55
+McRecoStage2 | trajcluster.................... | ..................... | art::Assns<recob::PFParticle,recob::Cluster,void>....................... | ....-
+McRecoStage2 | pandoraCosmicT0Reco............ | ..................... | std::vector<anab::T0>................................................... | ....5
+McRecoStage2 | pandoraCosmicKalmanTrackcalo... | ..................... | std::vector<anab::Calorimetry>.......................................... | ..153
+McRecoStage2 | pmtrackcalo.................... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | pandoraNuKHittag............... | ..................... | std::vector<anab::CosmicTag>............................................ | ....6
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::Shower,recob::PCAxis,void>............................ | ....-
+McRecoStage2 | pmtrack........................ | ..................... | art::Assns<recob::Track,recob::SpacePoint,void>......................... | ....-
+McRecoStage2 | pandoraNuKalmanShower.......... | ..................... | std::vector<std::vector<recob::TrackFitHitInfo> >....................... | ....1
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::Shower,recob::Hit,void>............................... | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::Seed,recob::Hit,void>................................. | ....-
+McRecoStage2 | pandoraNuPMA................... | ..................... | std::vector<recob::Vertex>.............................................. | ....0
+McRecoStage2 | pandoraCosmictag............... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraNuKalmanTrack........... | ..................... | art::Assns<recob::Track,recob::Hit,recob::TrackHitMeta>................. | ....-
+McRecoStage2 | pmtrackT0RecoBeam.............. | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pmtrackT0Reco.................. | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pandoraNuPMApid................ | ..................... | std::vector<anab::ParticleID>........................................... | ...21
+McRecoStage2 | pandoraCosmicKHit.............. | ..................... | art::Assns<recob::Track,recob::Hit,recob::TrackHitMeta>................. | ....-
+McRecoStage2 | pandoraNuKalmanShower.......... | ..................... | std::vector<recob::Track>............................................... | ....1
+McRecoStage2 | pandoraNuPMAContTag............ | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pmtracktag..................... | ..................... | std::vector<anab::CosmicTag>............................................ | ...43
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraCosmicPFPart............ | ..................... | std::vector<anab::CosmicTag>............................................ | ..114
+McRecoStage2 | pandoraCosmicKalmanTrack....... | ..................... | std::vector<recob::SpacePoint>.......................................... | ....0
+McRecoStage2 | pandoraCosmicKHitT0RecoBeam.... | ..................... | std::vector<anab::T0>................................................... | ....0
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::Seed,recob::Hit,void>................................. | ....-
+McRecoStage2 | pandoraNuKHittag............... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pmtrack........................ | ..................... | art::Assns<recob::Track,recob::Hit,recob::TrackHitMeta>................. | ....-
+McRecoStage2 | pandoraCosmicKHitpid........... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | showerrecopandora.............. | ..................... | art::Assns<recob::Shower,recob::Hit,void>............................... | ....-
+McRecoStage2 | pandoraNuKalmanTrack........... | ..................... | std::vector<recob::SpacePoint>.......................................... | ....0
+McRecoStage2 | pandoraCosmicKHitPFPart........ | ..................... | art::Assns<recob::PFParticle,anab::CosmicTag,void>...................... | ....-
+McRecoStage2 | pandoraCosmicKHitFlashMatch.... | ..................... | art::Assns<recob::Hit,anab::CosmicTag,void>............................. | ....-
+McRecoStage2 | pandoraCosmicT0RecoBeam........ | ..................... | std::vector<anab::T0>................................................... | ....0
+McRecoStage2 | pandoraNuPMAtag................ | ..................... | std::vector<anab::CosmicTag>............................................ | ....7
+McRecoStage2 | pandoraCosmicPFPart............ | ..................... | art::Assns<anab::CosmicTag,recob::Track,void>........................... | ....-
+McRecoStage2 | showerrecopandora.............. | ..................... | art::Assns<recob::Shower,recob::Cluster,void>........................... | ....-
+McRecoStage2 | pandoraNuPMA................... | ..................... | std::vector<recob::Track>............................................... | ....7
+McRecoStage2 | pandoraNuPMA................... | ..................... | std::vector<recob::SpacePoint>.......................................... | .3389
+McRecoStage2 | pandoraNuPMAContTag............ | ..................... | std::vector<anab::CosmicTag>............................................ | ....7
+McRecoStage2 | pandoraNuPMA................... | kink................. | std::vector<recob::Vertex>.............................................. | ....0
+McRecoStage2 | pandoraNu...................... | ..................... | art::Assns<recob::PFParticle,recob::Seed,void>.......................... | ....-
+McRecoStage2 | pandoraNuPMA................... | ..................... | art::Assns<recob::SpacePoint,recob::Hit,void>........................... | ....-
+McRecoStage2 | pandoraNuKalmanShowertag....... | ..................... | std::vector<anab::CosmicTag>............................................ | ....1
+McRecoStage2 | pandoraNuKHitcalo.............. | ..................... | std::vector<anab::Calorimetry>.......................................... | ...18
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::PFParticle,recob::Shower,void>........................ | ....-
+McRecoStage2 | pandoraNuMCSMu................. | ..................... | std::vector<recob::MCSFitResult>........................................ | ....7
+McRecoStage2 | pandoraCosmicKHit.............. | ..................... | std::vector<recob::Track>............................................... | ...28
+McRecoStage2 | pandoraNuKHitFlashMatch........ | ..................... | art::Assns<recob::Hit,anab::CosmicTag,void>............................. | ....-
+McRecoStage2 | pandoraCosmicT0RecoLoose....... | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pandoraNuKalmanShowerFlashMatch | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmicKHitcalo.......... | ..................... | std::vector<anab::Calorimetry>.......................................... | ...84
+McRecoStage2 | pandoraNuKalmanTrackFlashMatch. | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmicKHitcalo.......... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | pandoraNuKalmanTrackcalo....... | ..................... | std::vector<anab::Calorimetry>.......................................... | ...21
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::SpacePoint,recob::Hit,void>........................... | ....-
+McRecoStage2 | pandoraNuKalmanShowerpid....... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pandoraCosmicKalmanTrack....... | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::Shower>.............................................. | ....1
+McRecoStage2 | pandoraNutag................... | ..................... | std::vector<anab::CosmicTag>............................................ | ....7
+McRecoStage2 | pandoraCosmicKalmanTrackpid.... | ..................... | std::vector<anab::ParticleID>........................................... | ..153
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::Shower,recob::Hit,void>............................... | ....-
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::Track>............................................... | ....7
+McRecoStage2 | pandoraCosmicKHitpid........... | ..................... | std::vector<anab::ParticleID>........................................... | ...84
+McRecoStage2 | pandoraCosmicT0RecoBeam........ | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pandoraNuKalmanShower.......... | ..................... | std::vector<recob::SpacePoint>.......................................... | ....9
+McRecoStage2 | pandoraNuKalmanShowercalo...... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | pandoraCosmicContTag........... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraNuPMA................... | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | trajcluster.................... | ..................... | std::vector<recob::Hit>................................................. | .3929
+McRecoStage2 | pandoraNucalo.................. | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | pmtrackT0RecoLoose............. | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pmtrackcalo.................... | ..................... | std::vector<anab::Calorimetry>.......................................... | ..129
+McRecoStage2 | pandoraNu...................... | ..................... | std::vector<recob::Cluster>............................................. | ...24
+McRecoStage2 | pandoraNuPMA................... | node................. | std::vector<recob::Vertex>.............................................. | ....0
+McRecoStage2 | pandoraCosmicKHitFlashMatch.... | ..................... | std::vector<anab::CosmicTag>............................................ | ...28
+McRecoStage2 | pandoraCosmicPFPart............ | ..................... | art::Assns<recob::PFParticle,anab::CosmicTag,void>...................... | ....-
+McRecoStage2 | pandoraCosmiccalo.............. | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoStage2 | showerrecopandora.............. | ..................... | std::vector<recob::Shower>.............................................. | ....1
+McRecoStage2 | pandoraCosmicFlashTag.......... | ..................... | art::Assns<recob::PFParticle,anab::CosmicTag,void>...................... | ....-
+McRecoStage2 | pandoraNuKalmanTrack........... | ..................... | std::vector<recob::Track>............................................... | ....7
+McRecoStage2 | pandoraNuKalmanShower.......... | ..................... | art::Assns<recob::Track,recob::Hit,recob::TrackHitMeta>................. | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::PFParticle>.......................................... | ..114
+McRecoStage2 | pandoraCosmicKHitFlashMatch.... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmic.................. | ..................... | art::Assns<recob::PFParticle,recob::PCAxis,void>........................ | ....-
+McRecoStage2 | pandoraCosmicKHitT0Reco........ | ..................... | std::vector<anab::T0>................................................... | ....5
+McRecoStage2 | pandoraCosmicKHit.............. | ..................... | std::vector<recob::SpacePoint>.......................................... | .2883
+McRecoStage2 | pandoraCosmicKalmanTrack....... | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pandoraCosmicKHitT0RecoBeam.... | ..................... | art::Assns<recob::Track,anab::T0,void>.................................. | ....-
+McRecoStage2 | pandoraNuPMAcalo............... | ..................... | std::vector<anab::Calorimetry>.......................................... | ...21
+McRecoStage2 | pandoraCosmic.................. | ..................... | std::vector<recob::Shower>.............................................. | ...63
+McRecoStage2 | pandoraNuKHitFlashMatch........ | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraNuKHit.................. | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pandoraNuKalmanTrackpid........ | ..................... | std::vector<anab::ParticleID>........................................... | ...21
+McRecoStage2 | trajclusterTruthMatch.......... | ..................... | art::Assns<recob::Hit,simb::MCParticle,anab::BackTrackerHitMatchingData> | ....-
+McRecoStage2 | pandoraNuKHitpid............... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pandoraNuKHitFlashMatch........ | ..................... | std::vector<anab::CosmicTag>............................................ | ....6
+McRecoStage2 | showerrecopandora.............. | ..................... | art::Assns<recob::PFParticle,recob::Shower,void>........................ | ....-
+McRecoStage2 | pandoraCosmicpid............... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoStage2 | pandoraNuKHit.................. | ..................... | std::vector<recob::Track>............................................... | ....6
+McRecoStage2 | pandoraNuKalmanShower.......... | ..................... | art::Assns<recob::Track,recob::Hit,void>................................ | ....-
+McRecoStage2 | pandoraNuKalmanTrack........... | ..................... | art::Assns<recob::PFParticle,recob::Track,void>......................... | ....-
+McRecoStage2 | pmtrackContTag................. | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmicHitRemoval........ | ..................... | std::vector<recob::Hit>................................................. | .4002
+McRecoStage2 | pandoraNuKalmanShowertag....... | ..................... | art::Assns<recob::Track,anab::CosmicTag,void>........................... | ....-
+McRecoStage2 | pandoraCosmicT0RecoLoose....... | ..................... | art::Assns<recob::Track,recob::OpFlash,void>............................ | ....-
+McRecoStage2 | pmtrack........................ | ..................... | std::vector<recob::SpacePoint>.......................................... | .3445
+McRecoCali.. | pandoraNuKalmanTrackcalipid.... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoCali.. | pandoraNuKHitcalipid........... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoCali.. | pandoraNuKalmanTrackcali....... | ..................... | std::vector<anab::Calorimetry>.......................................... | ...21
+McRecoCali.. | pandoraNucalipid............... | ..................... | std::vector<anab::ParticleID>........................................... | ...21
+McRecoCali.. | pandoraNuPMAcali............... | ..................... | std::vector<anab::Calorimetry>.......................................... | ...21
+McRecoCali.. | pandoraNuKalmanTrackcalipid.... | ..................... | std::vector<anab::ParticleID>........................................... | ...21
+McRecoCali.. | pmtrackcalipid................. | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoCali.. | pandoraNucali.................. | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoCali.. | pandoraNuKHitcali.............. | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoCali.. | pandoraNuKHitcalipid........... | ..................... | std::vector<anab::ParticleID>........................................... | ...18
+McRecoCali.. | TriggerResults................. | ..................... | art::TriggerResults..................................................... | ....-
+McRecoCali.. | pmtrackcalipid................. | ..................... | std::vector<anab::ParticleID>........................................... | ..129
+McRecoCali.. | pandoraNucalipid............... | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoCali.. | pandoraNuPMAcali............... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoCali.. | pandoraNuPMAcalipid............ | ..................... | std::vector<anab::ParticleID>........................................... | ...21
+McRecoCali.. | pandoraNuKHitcali.............. | ..................... | std::vector<anab::Calorimetry>.......................................... | ...18
+McRecoCali.. | pandoraNuPMAcalipid............ | ..................... | art::Assns<recob::Track,anab::ParticleID,void>.......................... | ....-
+McRecoCali.. | pandoraNucali.................. | ..................... | std::vector<anab::Calorimetry>.......................................... | ...21
+McRecoCali.. | pmtrackcali.................... | ..................... | std::vector<anab::Calorimetry>.......................................... | ..129
+McRecoCali.. | pmtrackcali.................... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+McRecoCali.. | pandoraNuKalmanTrackcali....... | ..................... | art::Assns<recob::Track,anab::Calorimetry,void>......................... | ....-
+
+Total products (present, not present): 320 (316, 4).
+
+PRINCIPAL TYPE: SubRun
+PROCESS NAME | MODULE_LABEL | PRODUCT INSTANCE NAME | DATA PRODUCT TYPE.. | SIZE
+GenieGen.... | generator... | ..................... | sumdata::POTSummary | ...-
+
+Total products (present, not present): 1 (1, 0).
+
+PRINCIPAL TYPE: Run
+PROCESS NAME | MODULE_LABEL | PRODUCT INSTANCE NAME | DATA PRODUCT TYPE | SIZE
+GenieGen.... | corsika..... | ..................... | sumdata::RunData. | ...-
+GenieGen.... | generator... | ..................... | sumdata::RunData. | ...-
+
+Total products (present, not present): 2 (2, 0).
+
+13-Jul-2018 13:04:49 CDT  Closed input file "/pnfs/uboone/mc/uboone/reconstructed/prod_v06_26_07/prodgenie_bnb_nu_cosmic_uboone_reco/reco/prodgenie_bnb_nu_cosmic_uboone_0_20170422T170051_gen2_6359dce5-a9d4-4003-9bc9-1d5afd9b8bec_20171231T160825_reco1_20171231T163849_reco2_20180212T072008_cali.root"
+
+TrigReport ---------- Event  Summary ------------
+TrigReport Events total = 1 passed = 1 failed = 0
+
+TrigReport ------ Modules in End-Path: end_path ------------
+TrigReport  Trig Bit#        Run    Success      Error Name
+TrigReport     0    0          1          1          0 out1
+
+TimeReport ---------- Time  Summary ---[sec]----
+TimeReport CPU = 0.000000 Real = 0.000094
+
+Art has completed and will exit with status 0.
