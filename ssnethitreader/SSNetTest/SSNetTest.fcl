@@ -80,6 +80,8 @@ physics:
       ShowerLabel:      "pandoraNu"
       Planes: 3
       Radius: 60.0
+      WireToCMConstant:        0.3
+      TimeToCMConstant:        0.0557	
 	 }
   }
 #}

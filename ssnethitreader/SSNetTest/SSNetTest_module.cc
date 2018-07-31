@@ -56,8 +56,8 @@
 
 namespace{
 double DetectorDiagonal(geo::GeometryCore const& geom);
-bool inROI(double radius, double vertex_time, double vertex_wire, const recob::Hit* hit);
-double getRadius(double rad_in_cm);
+bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit* hit);
+//double getRadius(double rad_in_cm);
 }
 
 namespace lar {
@@ -122,6 +122,16 @@ namespace example {
    fhicl::Atom<double> Radius {
 	Name("Radius"),
 	Comment("radius in cm of the ROI from the vertex")
+ }; 
+   
+   fhicl::Atom<double> WireToCMConstant {
+	Name("WireToCMConstant"),
+	Comment("conversion factor for wire # to cm")
+ }; 
+  
+   fhicl::Atom<double> TimeToCMConstant {
+	Name("TimeToCMConstant"),
+	Comment("conversion factor for time # to cm")
  };  
 };//struct
     
@@ -149,6 +159,8 @@ namespace example {
     art::InputTag fShowerProducerLabel; ///name of track producer
     int fPlanes; ///the number of planes
     double fRadius; //radius of ROI in cm
+    double fWireToCMConstant; //converstion factor wire to cm
+    double fTimeToCMConstant; //converstion factor time to cm
 
 // vector of shower-like hit indices
 //   std::vector<size_t> _shrhits;
@@ -202,6 +214,8 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
 	, fShowerProducerLabel		  (config().ShowerLabel())  	
 	, fPlanes			  (config().Planes())
 	, fRadius			  (config().Radius())
+	, fWireToCMConstant		  (config().WireToCMConstant())
+	, fTimeToCMConstant		  (config().TimeToCMConstant())
 	// fInHitProducer   = p.get<std::string>("InHitProducer","gaushit");
         //fPxThresholdHigh = p.get<double>     ("PxThresholdHigh"        );
         //fPxThresholdLow  = p.get<double>     ("PxThresholdLow"         );
@@ -577,7 +591,7 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
  */
 
 //calc the radius for the ROI
-double radius = getRadius(fRadius);
+//double radius = getRadius(fRadius);
 	
 //for each vertex position in the vector
 for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
@@ -613,7 +627,7 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 		for(auto const& hit : _hitmap){
 			//if the sshit falls inside the ROI
 			auto const this_sshit = std::get<1>(hit);
-			if (inROI(radius, time, wire, this_sshit) == true){
+			if (inROI(fTimeToCMConstant, fWireToCMConstant, fRadius, time, wire, this_sshit) == true){
 				//add the sshit to the map for this vertex
 				_ROIhitmap.insert(hit);
 			} //if in ROI
@@ -759,14 +773,22 @@ namespace {
 
 //takes the plane and 2D vertex position and pointer to a 3D hit
 //returns true if the hit is within the radius of the vertex, false otherwise 
- bool inROI(double radius, double vertex_time, double vertex_wire,const recob::Hit* hit){
+ bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire,const recob::Hit* hit){
 	double hit_time = (*hit).PeakTime();
 	double hit_wire = (*hit).WireID().Wire;
 	double diff_t = hit_time - vertex_time;
 	double diff_w = hit_wire - vertex_wire;
+
+	//convert to cm
+	diff_t = diff_t * fTimeToCMConstant;
+	diff_w = diff_w * fWireToCMConstant;
+	
+	//calc dist from vertex
 	double dist_from_vtx = (diff_t*diff_t) + (diff_w*diff_w);
+	
+	//if within ROI radius
 	if(dist_from_vtx <= radius){
-		std::cout<<"matched sshit at ("<<hit_time<<", "<<hit_wire<<")"<<std::endl;
+	//	std::cout<<"matched sshit at ("<<hit_time<<", "<<hit_wire<<")"<<std::endl;
 		return true;
 	}else{
 		return false;
@@ -774,9 +796,12 @@ namespace {
 }//inROI
 
 //converts radius for ROI in units of time and wire from sm
-double getRadius(double rad_in_cm){
-	return 500;
-}//getRadius
+//double getRadius(double rad_in_cm){
+	//convert cm to time
+	//convert cm to wire
+	//r = sqrt(t^2 + w^2)
+//	return 500;
+//}//getRadius
 
 
 } // local namespace
