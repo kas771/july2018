@@ -179,6 +179,8 @@ namespace example {
     int fSubRun;    ///< number of the sub-run being processed
     int fSimPDG;       ///< PDG ID of the particle begin processed
     int fSimTrackID;   ///< GEANT ID of the particle begin processed
+    
+
     int fTPC;        ///the TPC ID
     int fCryostat;   ///the cryostat ID
 
@@ -291,7 +293,10 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     //fmytree->Branch("NdEdx",       &fSimNdEdxBins,   "NdEdx/I");
     // ROOT can understand fairly well vectors of numbers (and little more)
     //fmytree->Branch("dEdx",        &fSimdEdxBins);
-
+    fmytree->Branch("X_pos_vertex", &_xpos,   "_xpos/F");
+    fmytree->Branch("Y_pos_vertex", &_ypos,   "_ypos/F");
+    fmytree->Branch("Z_pos_vertex", &_zpos,   "_zpos/F");
+ 
 }
 
    
@@ -500,6 +505,7 @@ std::cout<<"number of sshits = "<<n<<", number of matches = "<<_hitmap.size()<<s
         	
 		//store the vertex postion
 		my_vtxs.push_back(xyz);
+		fmytree->Fill();
         	std::cout<<"vertex pos xyz = "<<_xpos<<", "<<_ypos<<", "<< _zpos<<std::endl;
 	//	std::cout<<"the address to the vertex is "<<xyz<<std::endl;
 		//delete[] xyz;
@@ -789,6 +795,7 @@ namespace {
 	//if within ROI radius
 	if(dist_from_vtx <= radius){
 	//	std::cout<<"matched sshit at ("<<hit_time<<", "<<hit_wire<<")"<<std::endl;
+//		std::cout<<"the distance from the vertex is "<<dist_from_vtx<<std::endl;
 		return true;
 	}else{
 		return false;
