@@ -89,12 +89,7 @@ namespace example {
       Comment("tag of the input data product with reconstructed hits")
       };
    
-     /*fhicl::Atom<art::InputTag> HitLabel[1] {
-      Name("ShrHitLabel"),
-      Comment("tag of the input data product with reconstructed hits")
-      };*/
-    
-       
+      
       fhicl::Atom<art::InputTag> ClusterLabel {
       Name("ClusterLabel"),
       Comment("tag of the input data product with reconstructed clusters")
@@ -118,7 +113,11 @@ namespace example {
      fhicl::Atom<art::InputTag> ShowerLabel {
 	Name("ShowerLabel"),
 	Comment("tag of the shower producer")                                                                                                                                                                                       };
-    
+    fhicl::Atom<int> Planes {
+	Name("Planes"),
+	Comment("number of planes to be considered (should be 3)")
+ };    
+
 };//struct
     
      using Parameters = art::EDAnalyzer::Table<Config>;
@@ -143,7 +142,7 @@ namespace example {
     art::InputTag fPFPLabel; ///name of PFParticle producer
     art::InputTag fTrackProducerLabel; ///name of track producer
     art::InputTag fShowerProducerLabel; ///name of track producer
-
+    int fPlanes; ///the number of planes
 
 // vector of shower-like hit indices
 //   std::vector<size_t> _shrhits;
@@ -195,6 +194,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
 	, fPFPLabel		  (config().PFPLabel())  
 	, fTrackProducerLabel		  (config().TrackLabel())  	
 	, fShowerProducerLabel		  (config().ShowerLabel())  	
+	, fPlanes			  (config().Planes())
 	// fInHitProducer   = p.get<std::string>("InHitProducer","gaushit");
         //fPxThresholdHigh = p.get<double>     ("PxThresholdHigh"        );
         //fPxThresholdLow  = p.get<double>     ("PxThresholdLow"         );
@@ -480,7 +480,7 @@ std::cout<<"number of sshits = "<<n<<", number of matches = "<<_hitmap.size()<<s
 		my_vtxs.push_back(xyz);
         	std::cout<<"vertex pos xyz = "<<_xpos<<", "<<_ypos<<", "<< _zpos<<std::endl;
 	//	std::cout<<"the address to the vertex is "<<xyz<<std::endl;
-		delete[] xyz;
+		//delete[] xyz;
 	} //for each vertex
 }//for each PFP
 
@@ -581,21 +581,25 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	double Y = *(++xyz_pos);
 	double Z = *(++xyz_pos);
 	std::cout<<"the vertex XYZ = "<<X<<", "<<Y<<", "<<Z<<std::endl;
-	
+
+	//for each plane
+	for (int plane = 0; plane <fPlanes; ++plane){	
+	//std::cout<<"starting plane "<<plane<<std::endl;
 	//get the wire and time for each plane
 	//grabbed this from lareventdisplay/EventDisplay/RecoBaseDrawer.cxx
-	int plane = 0;
+	//int plane = 0;
 //	double wire = geo->WireCoordinate(Y, Z, plane, rawOpt->fTPC, rawOpt->fCryostat);
 //      double time = detprop->ConvertXToTicks(X, plane, rawOpt->fTPC, rawOpt->fCryostat);
 
 //	int fTPC = 0;
 //	int fCryostat = 0;
-	double wire = geo->WireCoordinate(Y, Z, plane, fTPC, fCryostat);
-	double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
-	std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
+		double wire = geo->WireCoordinate(Y, Z, plane, fTPC, fCryostat);
+		double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
+		std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
 
-	//do ROI finding in each plane
-	
+		//do ROI finding in each plane
+	//std::cout<<"ending plane "<<plane<<std::endl;
+	}//for each plane
 }//loop over vertices
 
 

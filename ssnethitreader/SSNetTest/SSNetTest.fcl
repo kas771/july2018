@@ -78,6 +78,7 @@ physics:
       PFP: 		"pandoraNu"
       TrackLabel:	"pandoraNu"
       ShowerLabel:      "pandoraNu"
+      Planes: 3
 	 }
   }
 #}
