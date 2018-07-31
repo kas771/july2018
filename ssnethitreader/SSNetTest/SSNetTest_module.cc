@@ -470,7 +470,7 @@ std::cout<<"number of sshits = "<<n<<", number of matches = "<<_hitmap.size()<<s
 		std::cout<<"vertex ID  = "<<vtx.ID()<<std::endl;
 
 		//get the vertex position
-		double xyz[3] = {} ;
+		double* xyz = new double[3];
         	vtx.XYZ(&xyz[0]);
         	_xpos = xyz[0];
        		_ypos = xyz[1];
@@ -479,7 +479,8 @@ std::cout<<"number of sshits = "<<n<<", number of matches = "<<_hitmap.size()<<s
 		//store the vertex postion
 		my_vtxs.push_back(xyz);
         	std::cout<<"vertex pos xyz = "<<_xpos<<", "<<_ypos<<", "<< _zpos<<std::endl;
-
+	//	std::cout<<"the address to the vertex is "<<xyz<<std::endl;
+		delete[] xyz;
 	} //for each vertex
 }//for each PFP
 
@@ -573,6 +574,7 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	//std::cout<<"looking at vertex # "<<vtx_index<<std::endl;
 	double* xyz_pos = my_vtxs.at(vtx_index);
+	//std::cout<<"the vertex pointer is "<<xyz_pos<<std::endl;
 	
 	//double X, Y, Z; 
 	double X = *(xyz_pos);
