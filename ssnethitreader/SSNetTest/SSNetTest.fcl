@@ -79,6 +79,7 @@ physics:
       TrackLabel:	"pandoraNu"
       ShowerLabel:      "pandoraNu"
       Planes: 3
+      Radius: 60.0
 	 }
   }
 #}

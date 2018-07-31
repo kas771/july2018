@@ -56,7 +56,8 @@
 
 namespace{
 double DetectorDiagonal(geo::GeometryCore const& geom);
-//bool inROI(double* vertex_pos, double* hit_pos);//checks if hit is in ROI
+bool inROI(double radius, double vertex_time, double vertex_wire, const recob::Hit* hit);
+double getRadius(double rad_in_cm);
 }
 
 namespace lar {
@@ -118,6 +119,10 @@ namespace example {
 	Comment("number of planes to be considered (should be 3)")
  };    
 
+   fhicl::Atom<double> Radius {
+	Name("Radius"),
+	Comment("radius in cm of the ROI from the vertex")
+ };  
 };//struct
     
      using Parameters = art::EDAnalyzer::Table<Config>;
@@ -143,6 +148,7 @@ namespace example {
     art::InputTag fTrackProducerLabel; ///name of track producer
     art::InputTag fShowerProducerLabel; ///name of track producer
     int fPlanes; ///the number of planes
+    double fRadius; //radius of ROI in cm
 
 // vector of shower-like hit indices
 //   std::vector<size_t> _shrhits;
@@ -195,6 +201,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
 	, fTrackProducerLabel		  (config().TrackLabel())  	
 	, fShowerProducerLabel		  (config().ShowerLabel())  	
 	, fPlanes			  (config().Planes())
+	, fRadius			  (config().Radius())
 	// fInHitProducer   = p.get<std::string>("InHitProducer","gaushit");
         //fPxThresholdHigh = p.get<double>     ("PxThresholdHigh"        );
         //fPxThresholdLow  = p.get<double>     ("PxThresholdLow"         );
@@ -238,7 +245,8 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
        ++iTPC;
          } // while
 */
-	
+
+    
     // Access ART's TFileService, which will handle creating and writing
     // histograms and n-tuples for us. 
     art::ServiceHandle<art::TFileService> tfs;
@@ -568,7 +576,8 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
  *
  */
 
-//double* xyz_pos = 0;
+//calc the radius for the ROI
+double radius = getRadius(fRadius);
 	
 //for each vertex position in the vector
 for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
@@ -581,6 +590,9 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	double Y = *(++xyz_pos);
 	double Z = *(++xyz_pos);
 	std::cout<<"the vertex XYZ = "<<X<<", "<<Y<<", "<<Z<<std::endl;
+	
+	// map associated peak time of a hit to a pointer for the sshit in ROI of the vertex
+	std::map<int, const recob::Hit* > _ROIhitmap;
 
 	//for each plane
 	for (int plane = 0; plane <fPlanes; ++plane){	
@@ -597,9 +609,18 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 		double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
 		std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
 
-		//do ROI finding in each plane
+		//for each remaining sshit
+		for(auto const& hit : _hitmap){
+			//if the sshit falls inside the ROI
+			auto const this_sshit = std::get<1>(hit);
+			if (inROI(radius, time, wire, this_sshit) == true){
+				//add the sshit to the map for this vertex
+				_ROIhitmap.insert(hit);
+			} //if in ROI
+		}//each sshit
 	//std::cout<<"ending plane "<<plane<<std::endl;
 	}//for each plane
+	std::cout<<"the number of shower hits within the ROI is : "<<_ROIhitmap.size()<<std::endl;
 }//loop over vertices
 
 
@@ -736,9 +757,26 @@ namespace {
 	return std::sqrt(cet::sum_of_squares(length, width, height));
 	} // DetectorDiagonal()
 
-//takes the 3D vertex position and 3D hit position
+//takes the plane and 2D vertex position and pointer to a 3D hit
 //returns true if the hit is within the radius of the vertex, false otherwise 
-/* bool inROI(double* vertex_pos, double* hit_pos){
-	return false;
-	}*/	
+ bool inROI(double radius, double vertex_time, double vertex_wire,const recob::Hit* hit){
+	double hit_time = (*hit).PeakTime();
+	double hit_wire = (*hit).WireID().Wire;
+	double diff_t = hit_time - vertex_time;
+	double diff_w = hit_wire - vertex_wire;
+	double dist_from_vtx = (diff_t*diff_t) + (diff_w*diff_w);
+	if(dist_from_vtx <= radius){
+		std::cout<<"matched sshit at ("<<hit_time<<", "<<hit_wire<<")"<<std::endl;
+		return true;
+	}else{
+		return false;
+	}
+}//inROI
+
+//converts radius for ROI in units of time and wire from sm
+double getRadius(double rad_in_cm){
+	return 500;
+}//getRadius
+
+
 } // local namespace
