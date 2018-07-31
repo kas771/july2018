@@ -20,6 +20,7 @@
  #include "lardataobj/RecoBase/PFParticle.h"
  #include "lardataobj/RecoBase/Track.h"
  #include "lardataobj/RecoBase/Shower.h"
+ #include "lardata/DetectorInfoServices/DetectorPropertiesService.h"
  
 // Framework includes
  #include "canvas/Utilities/Exception.h"
@@ -161,6 +162,8 @@ namespace example {
     int fSubRun;    ///< number of the sub-run being processed
     int fSimPDG;       ///< PDG ID of the particle begin processed
     int fSimTrackID;   ///< GEANT ID of the particle begin processed
+    int fTPC;        ///the TPC ID
+    int fCryostat;   ///the cryostat ID
 
     Float_t _xpos, _ypos, _zpos; // xyz of vertex
 
@@ -169,8 +172,13 @@ namespace example {
     double fStartPE[4];   ///< (Px,Py,Pz,E) at the true start of the particle
     double fEndPE[4];     ///< (Px,Py,Pz,E) at the true end of the particle
 
-    geo::GeometryCore const* fGeometry;    
-     }; // class SSNetTest
+    geo::GeometryCore const* fGeometry; 
+
+    //stuff to do the vertex to plane mapping
+    art::ServiceHandle<geo::Geometry>  geo;
+    detinfo::DetectorProperties const* detprop;    
+
+ }; // class SSNetTest
 
 SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
 	: EDAnalyzer(config)
@@ -196,7 +204,11 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
   {
     // get a pointer to the geometry service provider
      fGeometry = lar::providerFrom<geo::Geometry>();
-  }
+
+    //get a pointer to the detector properties service provider
+     detprop = lar::providerFrom<detinfo::DetectorPropertiesService>();
+ }
+
 
   
   //-----------------------------------------------------------------------
@@ -205,7 +217,28 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     // Get the detector length, to determine the maximum bin edge of one
     // of the histograms.
     const double detectorLength = DetectorDiagonal(*fGeometry);
+  
+   //get the tpc and cryostat ID's  
+    auto const TPC = (*fGeometry).begin_TPC();
+    auto ID = TPC.ID();
+    fCryostat = ID.Cryostat;
+    fTPC = ID.TPC;
+    std::cout<<TPC.ID()<<"= the beginning TPC ID" <<std::endl;
+    std::cout<<"the cryostat id = "<<fCryostat<<std::endl;  
+    std::cout<<"the tpc id = "<<fTPC<<std::endl;  
 
+//check that there's only one definition
+/* geo::GeometryCore::TPC_iterator iTPC = (*fGeometry).begin_TPC();  
+ auto const end_TPC = (*fGeometry).end_TPC();
+    //std::cout<<end_TPC.ID()<<"= the ending TPC ID" <<std::endl;
+    while (iTPC != end_TPC) {
+  	std::cout << "current TPC: " << iTPC.ID() << std::endl;
+  // the TPC descriptor object
+ // 	geo::TPCGeo const& TPC = *iTPC;
+       ++iTPC;
+         } // while
+*/
+	
     // Access ART's TFileService, which will handle creating and writing
     // histograms and n-tuples for us. 
     art::ServiceHandle<art::TFileService> tfs;
@@ -549,9 +582,15 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	
 	//get the wire and time for each plane
 	//grabbed this from lareventdisplay/EventDisplay/RecoBaseDrawer.cxx
-	//int plane = 0;
-	//double wire = geo->WireCoordinate(Y, Z, plane, rawOpt->fTPC, rawOpt->fCryostat);
-        //double time = detprop->ConvertXToTicks(X, plane, rawOpt->fTPC, rawOpt->fCryostat);
+	int plane = 0;
+//	double wire = geo->WireCoordinate(Y, Z, plane, rawOpt->fTPC, rawOpt->fCryostat);
+//      double time = detprop->ConvertXToTicks(X, plane, rawOpt->fTPC, rawOpt->fCryostat);
+
+//	int fTPC = 0;
+//	int fCryostat = 0;
+	double wire = geo->WireCoordinate(Y, Z, plane, fTPC, fCryostat);
+	double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
+	std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
 
 	//do ROI finding in each plane
 	
