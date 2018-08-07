@@ -57,7 +57,7 @@
 namespace{
 double DetectorDiagonal(geo::GeometryCore const& geom);
 bool matches(const recob::Hit* Hit, const recob::Hit* ssHit);
-//bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const art::Ptr<recob::Hit> hit);
+bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit* hit);
 //double getRadius(double rad_in_cm);
 }
 
@@ -379,63 +379,28 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
  art::Handle< std::vector<recob::Hit> > sshitHandle;
  if (!event.getByLabel(fSSHitProducerLabel, sshitHandle)) return;
 
-// map associated channel of a hit to a pointer for the sshit
-//std::map<int, const recob::Hit* > _hitmap;
+//list storing pairs of associated hits and sshits
 std::list<std::pair<const recob::Hit*, const recob::Hit* >> _hitlist; //a list of hits
-//std::list<std::pair<const art::Ptr<recob::Hit>, const art::Ptr<recob::Hit> >> _hitlist; //a list of hits
  
 int n = 0; //the total number of sshits
 //num_total_sshits = n;
 
-int size_hitmap = 0;
 // For every ssHit:
     for ( auto const& sshit : (*sshitHandle) )
       {
 	n++;
-	//get the time, channel, wire, and plane
-//	auto t = sshit.PeakTime();
-//	auto channel = sshit.Channel();
-//	auto w = sshit.WireID().Wire;
-//	unsigned int plane  = sshit.WireID().Plane;
-	//std::cout<<"the channel number = "<<hitChannelNumber<<std::endl;
-     	
 	//for every Hit
 	for ( auto const& hit : (*hitHandle) ){
-		//auto mychannel = hit.Channel();
-		
-		//if the hit isn't already matched
-		//auto search = _hitmap.find(mychannel);
-		//if ( search != _hitmap.end() ) continue;
 
-	//	auto myt = hit.PeakTime();
-	//	auto myw = hit.WireID().Wire;
-	//	unsigned int myplane  = hit.WireID().Plane;
-	
 		//if the wire, plane, and time match
 		if (matches(&hit, &sshit)== true){	
-		//if (myw == w && myplane == plane && myt == t){	
-			//save the channel as the key and a pointer to the sshit
-			//_hitmap[channel] = &sshit;
-//			_hitmap.emplace(channel, &sshit);
-		//	auto hitptr = &hit;
-		//	auto sshitptr = &sshit;
-		//	std::pair<const recob::Hit*, const recob::Hit* > item = std::make_pair(hitptr, sshitptr);
-		//	_hitlist.emplace(_hitlist.begin(), item);
-		//	if (n<5){
-		//		std::cout<<"the hit pointer = "<<hitptr<<" and the item  = "<<std::get<0>(item)<<std::endl;
-		//	}
-			//_hitlist.emplace(_hitlist.begin(), hitptr, sshitptr);
+			//make a pair of pointers to hits and add them to the list
 			_hitlist.emplace(_hitlist.begin(), &hit, &sshit);
-			size_hitmap++;
 		}//if they match	
 	}//for each Hit
  } // for each SSHit
 
-//std::cout<<"the number of items in the map = "<<_hitmap.size()<<std::endl;
-std::cout<<"number of hits = "<<num_total_hits<<", number of sshits = "<<n<<"/"<<sshitHandle->size()<<", number of matches = "<<_hitlist.size()<<"/"<<size_hitmap<<std::endl;
-//std::cout<<"the number of close but unmatched sshits = "<<num_close_sshits<<std::endl;
-//num_total_matched_hits = _hitmap.size();
-
+std::cout<<"number of hits = "<<num_total_hits<<", number of sshits = "<<n<<"/"<<sshitHandle->size()<<", number of matches = "<<_hitlist.size()<<std::endl;
 fmytree->Fill();
  
 /*
@@ -570,14 +535,12 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			
 			//for each hit
 			 for (size_t h=0; h < shr_hit_v.size(); h++){
-			 	auto const hit = *(shr_hit_v.at(h));
-				const recob::Hit* this_hit = &hit;
-				//float this_channel = this_hit.Channel();
-				
+			 	auto const hit = *(shr_hit_v.at(h)); //get the hit from the pointer in the vector
+				const recob::Hit* this_hit = &hit; //get the address to the hit that was stored in the vector
+			
 				//in the hit list, remove corresponding shr hits
 				for(auto const& item : _hitlist){
 					auto const stored_hit = (std::get<0>(item));
-					//std::cout<<"the hit in the shower is "<<this_hit<<" and the sshit is "<<stored_hit<<std::endl;
 					if(matches(this_hit, stored_hit)==true){
 						//std::cout<<"removing shower hit"<<std::endl;	
 						_hitlist.remove(item);
@@ -587,8 +550,9 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 				}
 
 			}//for each hit
-		std::cout<<"number of remaining matched shr hits = "<<_hitlist.size()<<std::endl;
-		std::cout<<"the number of sshits in the shower = "<<num_sshit_in_shower<<std::endl;
+			
+			std::cout<<"number of remaining matched shr hits = "<<_hitlist.size()<<std::endl;
+			std::cout<<"the number of sshits in the shower = "<<num_sshit_in_shower<<std::endl;
 
 		}//if the showers match
 	
@@ -634,8 +598,8 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 
 			}//for each hit
 
-		//std::cout<<"number of remaining matched shr hits = "<<_hitmap.size()<<std::endl;
-		std::cout<<"the number of matched shr hits in the track = "<<number_matched_trk_hits<<std::endl;
+			//std::cout<<"number of remaining matched shr hits = "<<_hitmap.size()<<std::endl;
+			std::cout<<"the number of matched shr hits in the track = "<<number_matched_trk_hits<<std::endl;
 		}//if the tracks match
 	}//for each track from a 1 shower 1 track topology 
 }//for each track
@@ -660,37 +624,36 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	double Z = *(++xyz_pos);
 	std::cout<<"the vertex XYZ = "<<X<<", "<<Y<<", "<<Z<<std::endl;
 	
-	// map associated channel of a hit to a pointer for the sshit in ROI of the vertex
-//	std::list<std::pair<const art::Ptr<recob::Hit>, const art::Ptr<recob::Hit> >>  _ROIhitlist;
+	// subset of hit <-> sshit pairs within ROI of the vertex
+	std::list<std::pair<const recob::Hit*, const recob::Hit* >>  _ROIhitlist;
 
 	//for each plane
 	for (int plane = 0; plane <fPlanes; ++plane){	
-	//std::cout<<"starting plane "<<plane<<std::endl;
-	//get the wire and time for each plane
-	//grabbed this from lareventdisplay/EventDisplay/RecoBaseDrawer.cxx
-	//int plane = 0;
-//	double wire = geo->WireCoordinate(Y, Z, plane, rawOpt->fTPC, rawOpt->fCryostat);
-//      double time = detprop->ConvertXToTicks(X, plane, rawOpt->fTPC, rawOpt->fCryostat);
-
-//	int fTPC = 0;
-//	int fCryostat = 0;
+		//std::cout<<"starting plane "<<plane<<std::endl;
+	
+		//get the wire and time for each plane
+		//grabbed this from lareventdisplay/EventDisplay/RecoBaseDrawer.cxx
+		//int plane = 0;
 		double wire = geo->WireCoordinate(Y, Z, plane, fTPC, fCryostat);
 		double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
 		std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
 
-/*		//for each remaining sshit
+		//for each remaining sshit
 		for(auto const& item : _hitlist){
 			//if the sshit falls inside the ROI
 			auto const this_sshit = std::get<1>(item);
 			if (inROI(fTimeToCMConstant, fWireToCMConstant, fRadius, time, wire, this_sshit) == true){
 				//add the sshit to the map for this vertex
 				_ROIhitlist.push_back(item);
+
 			} //if in ROI
 		}//each sshit
-*/
-	//std::cout<<"ending plane "<<plane<<std::endl;
+
+		//std::cout<<"ending plane "<<plane<<std::endl;
+
 	}//for each plane
-//	std::cout<<"the number of shower hits within the ROI is : "<<_ROIhitlist.size()<<std::endl;
+
+std::cout<<"the number of shower hits within the ROI is after removing matched =  "<<_ROIhitlist.size()<<std::endl;
 }//loop over vertices
 
 
@@ -848,9 +811,8 @@ namespace {
 }
 
 //takes the plane and 2D vertex position and pointer to a 3D hit
-//returns true if the hit is within the radius of the vertex, false otherwise 
-/* 
-bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const art::Ptr<recob::Hit> hit){
+//returns true if the hit is within the radius of the vertex, false otherwise  
+bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit*  hit){
 	double hit_time = (*hit).PeakTime();
 	double hit_wire = (*hit).WireID().Wire;
 	double diff_t = hit_time - vertex_time;
@@ -872,7 +834,7 @@ bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, do
 		return false;
 	}
 }//inROI
-*/
+
 
 //converts radius for ROI in units of time and wire from sm
 //double getRadius(double rad_in_cm){
