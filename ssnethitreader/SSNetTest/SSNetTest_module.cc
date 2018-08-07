@@ -56,7 +56,8 @@
 
 namespace{
 double DetectorDiagonal(geo::GeometryCore const& geom);
-bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit* hit);
+bool matches(const recob::Hit* Hit, const recob::Hit* ssHit);
+//bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const art::Ptr<recob::Hit> hit);
 //double getRadius(double rad_in_cm);
 }
 
@@ -191,6 +192,10 @@ namespace example {
     double fStartPE[4];   ///< (Px,Py,Pz,E) at the true start of the particle
     double fEndPE[4];     ///< (Px,Py,Pz,E) at the true end of the particle
 
+    int num_total_hits; //the total number of gaushits 
+    int num_total_sshits; //the total number of sshits
+    int num_total_matched_hits; //the total number of matched sshits
+   
     geo::GeometryCore const* fGeometry; 
 
     //stuff to do the vertex to plane mapping
@@ -296,7 +301,10 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     fmytree->Branch("X_pos_vertex", &_xpos,   "_xpos/F");
     fmytree->Branch("Y_pos_vertex", &_ypos,   "_ypos/F");
     fmytree->Branch("Z_pos_vertex", &_zpos,   "_zpos/F");
- 
+    fmytree->Branch("total_hits", &num_total_hits,   "total_hits/I");
+    fmytree->Branch("total_sshits", &num_total_sshits,   "total_sshits/I");
+    fmytree->Branch("total_matched_hits", &num_total_matched_hits,   "total_matched_hits/I");
+
 }
 
    
@@ -365,46 +373,70 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
 //load hits
  art::Handle< std::vector<recob::Hit> > hitHandle;
  if (!event.getByLabel(fHitProducerLabel, hitHandle)) return;
- 
+ num_total_hits = hitHandle->size();
+
 //load sshits  
  art::Handle< std::vector<recob::Hit> > sshitHandle;
  if (!event.getByLabel(fSSHitProducerLabel, sshitHandle)) return;
 
-// map associated peak time of a hit to a pointer for the sshit
-std::map<int, const recob::Hit* > _hitmap;
+// map associated channel of a hit to a pointer for the sshit
+//std::map<int, const recob::Hit* > _hitmap;
+std::list<std::pair<const recob::Hit*, const recob::Hit* >> _hitlist; //a list of hits
+//std::list<std::pair<const art::Ptr<recob::Hit>, const art::Ptr<recob::Hit> >> _hitlist; //a list of hits
  
- //int m= 0; //number of matched sshits
-int n = sshitHandle->size(); //the total number of sshits
-// For every Hit:
-    for ( auto const& hit : (*hitHandle) )
+int n = 0; //the total number of sshits
+//num_total_sshits = n;
+
+int size_hitmap = 0;
+// For every ssHit:
+    for ( auto const& sshit : (*sshitHandle) )
       {
-	//int plane_h = hit.View();
-	
-	//get the time and channel
-	float t = hit.PeakTime();
-	auto hitChannelNumber = hit.Channel();
-//	std::cout<<"the channel number = "<<hitChannelNumber<<std::endl;
+	n++;
+	//get the time, channel, wire, and plane
+//	auto t = sshit.PeakTime();
+//	auto channel = sshit.Channel();
+//	auto w = sshit.WireID().Wire;
+//	unsigned int plane  = sshit.WireID().Plane;
+	//std::cout<<"the channel number = "<<hitChannelNumber<<std::endl;
      	
-	//int idx = 0; //the sshit index
-	//for every SSHit
-	for ( auto const& sshit : (*sshitHandle) ){
-		//if the sshit isn't already matched
-		auto search = _hitmap.find(sshit.PeakTime());
-		if ( search != _hitmap.end() ) continue;
-		//if the channel matches
-		if (sshit.Channel() == hitChannelNumber){	
-			//if the peak time matches
-			if (sshit.PeakTime() == t){
-				//save the peak time as the key and a pointer to the sshit
-				_hitmap[t] = &sshit;
-				//m++; //increment number of matched hits
-			}//peak time
-		}//channel
-	}//for each SSHits
- } // for each Hit
+	//for every Hit
+	for ( auto const& hit : (*hitHandle) ){
+		//auto mychannel = hit.Channel();
+		
+		//if the hit isn't already matched
+		//auto search = _hitmap.find(mychannel);
+		//if ( search != _hitmap.end() ) continue;
+
+	//	auto myt = hit.PeakTime();
+	//	auto myw = hit.WireID().Wire;
+	//	unsigned int myplane  = hit.WireID().Plane;
+	
+		//if the wire, plane, and time match
+		if (matches(&hit, &sshit)== true){	
+		//if (myw == w && myplane == plane && myt == t){	
+			//save the channel as the key and a pointer to the sshit
+			//_hitmap[channel] = &sshit;
+//			_hitmap.emplace(channel, &sshit);
+		//	auto hitptr = &hit;
+		//	auto sshitptr = &sshit;
+		//	std::pair<const recob::Hit*, const recob::Hit* > item = std::make_pair(hitptr, sshitptr);
+		//	_hitlist.emplace(_hitlist.begin(), item);
+		//	if (n<5){
+		//		std::cout<<"the hit pointer = "<<hitptr<<" and the item  = "<<std::get<0>(item)<<std::endl;
+		//	}
+			//_hitlist.emplace(_hitlist.begin(), hitptr, sshitptr);
+			_hitlist.emplace(_hitlist.begin(), &hit, &sshit);
+			size_hitmap++;
+		}//if they match	
+	}//for each Hit
+ } // for each SSHit
 
 //std::cout<<"the number of items in the map = "<<_hitmap.size()<<std::endl;
-std::cout<<"number of sshits = "<<n<<", number of matches = "<<_hitmap.size()<<std::endl;
+std::cout<<"number of hits = "<<num_total_hits<<", number of sshits = "<<n<<"/"<<sshitHandle->size()<<", number of matches = "<<_hitlist.size()<<"/"<<size_hitmap<<std::endl;
+//std::cout<<"the number of close but unmatched sshits = "<<num_close_sshits<<std::endl;
+//num_total_matched_hits = _hitmap.size();
+
+fmytree->Fill();
  
 /*
  * loop over PFParticles and find 1 shower 1 track topologies
@@ -531,23 +563,35 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			std::cout<<"the shower length is  = "<<shr.Length()<<", and the opening angle is = "<<shr.OpenAngle()<<std::endl;
 			
 			 //get the associated hits for the shower
-			 const std::vector<art::Ptr<recob::Hit> > shr_hit_v = shr_hit_assn_v.at(shr_index);
+			 //const std::vector<art::Ptr<recob::Hit> > shr_hit_v = shr_hit_assn_v.at(shr_index);
+			 auto shr_hit_v = shr_hit_assn_v.at(shr_index);
 			std::cout<<"the number of hits in the shower = "<<shr_hit_v.size()<<std::endl;		 
+			int num_sshit_in_shower = 0;
 			
 			//for each hit
 			 for (size_t h=0; h < shr_hit_v.size(); h++){
-			 	auto const& this_hit = *(shr_hit_v.at(h));
-				float this_time = this_hit.PeakTime();
+			 	auto const hit = *(shr_hit_v.at(h));
+				const recob::Hit* this_hit = &hit;
+				//float this_channel = this_hit.Channel();
 				
-				//if the peak time is in the hit map, remove the shrhits from the map
-				if(_hitmap.count(this_time) >= 1){
-					_hitmap.erase(this_time);
+				//in the hit list, remove corresponding shr hits
+				for(auto const& item : _hitlist){
+					auto const stored_hit = (std::get<0>(item));
+					//std::cout<<"the hit in the shower is "<<this_hit<<" and the sshit is "<<stored_hit<<std::endl;
+					if(matches(this_hit, stored_hit)==true){
+						//std::cout<<"removing shower hit"<<std::endl;	
+						_hitlist.remove(item);
+						num_sshit_in_shower++;
+						break;
+					}	
 				}
 
 			}//for each hit
-		std::cout<<"number of remaining matched shr hits = "<<_hitmap.size()<<std::endl;
+		std::cout<<"number of remaining matched shr hits = "<<_hitlist.size()<<std::endl;
+		std::cout<<"the number of sshits in the shower = "<<num_sshit_in_shower<<std::endl;
 
 		}//if the showers match
+	
 	}//for each shower from a 1 shower 1 track topology 
 
 	//auto const& length = shr.Length();
@@ -573,18 +617,21 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			 const std::vector<art::Ptr<recob::Hit> > trk_hit_v = trk_hit_assn_v.at(trk_index);
 			std::cout<<"the number of hits in the track = "<<trk_hit_v.size()<<std::endl;		 
 			
-			//for each hit
+/*			//for each hit
 			 for (size_t h=0; h < trk_hit_v.size(); h++){
-			 	auto const& this_hit = *(trk_hit_v.at(h));
-				float this_time = this_hit.PeakTime();
+			 	auto const& this_hit = (trk_hit_v.at(h));
+				//float this_channel = this_hit.Channel();
 				
 				//if the peak time is in the hit map, remove the shrhits from the map
-				if(_hitmap.count(this_time) >= 1){
+				for (auto const& item : _hitlist){
 					//_hitmap.erase(this_time);
-					number_matched_trk_hits++;
+					if(this_hit == std::get<0>(item)){
+						number_matched_trk_hits++;
+					}
 				}
 
 			}//for each hit
+*/
 		//std::cout<<"number of remaining matched shr hits = "<<_hitmap.size()<<std::endl;
 		std::cout<<"the number of matched shr hits in the track = "<<number_matched_trk_hits<<std::endl;
 		}//if the tracks match
@@ -611,8 +658,8 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	double Z = *(++xyz_pos);
 	std::cout<<"the vertex XYZ = "<<X<<", "<<Y<<", "<<Z<<std::endl;
 	
-	// map associated peak time of a hit to a pointer for the sshit in ROI of the vertex
-	std::map<int, const recob::Hit* > _ROIhitmap;
+	// map associated channel of a hit to a pointer for the sshit in ROI of the vertex
+//	std::list<std::pair<const art::Ptr<recob::Hit>, const art::Ptr<recob::Hit> >>  _ROIhitlist;
 
 	//for each plane
 	for (int plane = 0; plane <fPlanes; ++plane){	
@@ -629,18 +676,19 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 		double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
 		std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
 
-		//for each remaining sshit
-		for(auto const& hit : _hitmap){
+/*		//for each remaining sshit
+		for(auto const& item : _hitlist){
 			//if the sshit falls inside the ROI
-			auto const this_sshit = std::get<1>(hit);
+			auto const this_sshit = std::get<1>(item);
 			if (inROI(fTimeToCMConstant, fWireToCMConstant, fRadius, time, wire, this_sshit) == true){
 				//add the sshit to the map for this vertex
-				_ROIhitmap.insert(hit);
+				_ROIhitlist.push_back(item);
 			} //if in ROI
 		}//each sshit
+*/
 	//std::cout<<"ending plane "<<plane<<std::endl;
 	}//for each plane
-	std::cout<<"the number of shower hits within the ROI is : "<<_ROIhitmap.size()<<std::endl;
+//	std::cout<<"the number of shower hits within the ROI is : "<<_ROIhitlist.size()<<std::endl;
 }//loop over vertices
 
 
@@ -777,9 +825,30 @@ namespace {
 	return std::sqrt(cet::sum_of_squares(length, width, height));
 	} // DetectorDiagonal()
 
+//takes pointers to any two hits (hit/sshit or hit/hit etc.) and returns true if they match
+ bool matches(const recob::Hit* Hit, const recob::Hit* ssHit){
+	auto hit = *Hit;
+	auto sshit = *ssHit;
+	
+	auto t = hit.PeakTime();
+        auto w = hit.WireID().Wire;
+        auto plane  = hit.View();
+
+	auto sst = sshit.PeakTime();
+        auto ssw = sshit.WireID().Wire;
+        auto ssplane  = sshit.View();
+
+	if(t == sst && w == ssw && plane == ssplane){
+		return true;
+	} else{
+		return false;
+	}
+}
+
 //takes the plane and 2D vertex position and pointer to a 3D hit
 //returns true if the hit is within the radius of the vertex, false otherwise 
- bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire,const recob::Hit* hit){
+/* 
+bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const art::Ptr<recob::Hit> hit){
 	double hit_time = (*hit).PeakTime();
 	double hit_wire = (*hit).WireID().Wire;
 	double diff_t = hit_time - vertex_time;
@@ -801,6 +870,7 @@ namespace {
 		return false;
 	}
 }//inROI
+*/
 
 //converts radius for ROI in units of time and wire from sm
 //double getRadius(double rad_in_cm){
