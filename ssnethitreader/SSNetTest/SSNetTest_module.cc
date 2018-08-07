@@ -192,10 +192,13 @@ namespace example {
     double fStartPE[4];   ///< (Px,Py,Pz,E) at the true start of the particle
     double fEndPE[4];     ///< (Px,Py,Pz,E) at the true end of the particle
 
-    int num_total_hits; //the total number of gaushits 
-    int num_total_sshits; //the total number of sshits
-    int num_total_matched_hits; //the total number of matched sshits
-   
+    int fnum_total_hits; //the total number of gaushits 
+    int fnum_total_sshits; //the total number of sshits
+    int fnum_total_matched_hits; //the total number of matched sshits
+    double fratio_total_sshits_hits; //the total number of sshits over total number of hits
+    //int fnum_sshits_ROI_no_shower;
+    //int fnum_sshits_ROI_with_shower; 
+ 
     geo::GeometryCore const* fGeometry; 
 
     //stuff to do the vertex to plane mapping
@@ -301,10 +304,10 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     fmytree->Branch("X_pos_vertex", &_xpos,   "_xpos/F");
     fmytree->Branch("Y_pos_vertex", &_ypos,   "_ypos/F");
     fmytree->Branch("Z_pos_vertex", &_zpos,   "_zpos/F");
-    fmytree->Branch("total_hits", &num_total_hits,   "total_hits/I");
-    fmytree->Branch("total_sshits", &num_total_sshits,   "total_sshits/I");
-    fmytree->Branch("total_matched_hits", &num_total_matched_hits,   "total_matched_hits/I");
-
+    fmytree->Branch("total_hits", &fnum_total_hits,   "total_hits/I");
+    fmytree->Branch("total_sshits", &fnum_total_sshits,   "total_sshits/I");
+    fmytree->Branch("total_matched_hits", &fnum_total_matched_hits,   "total_matched_hits/I");
+    fmytree->Branch("ratio_total_sshits_hits", &fratio_total_sshits_hits,   "ratio_total_sshits_hits/D");
 }
 
    
@@ -373,7 +376,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
 //load hits
  art::Handle< std::vector<recob::Hit> > hitHandle;
  if (!event.getByLabel(fHitProducerLabel, hitHandle)) return;
- num_total_hits = hitHandle->size();
+ fnum_total_hits = hitHandle->size();
 
 //load sshits  
  art::Handle< std::vector<recob::Hit> > sshitHandle;
@@ -383,7 +386,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
 std::list<std::pair<const recob::Hit*, const recob::Hit* >> _hitlist; //a list of hits
  
 int n = 0; //the total number of sshits
-//num_total_sshits = n;
+fnum_total_sshits = sshitHandle->size();
 
 // For every ssHit:
     for ( auto const& sshit : (*sshitHandle) )
@@ -400,7 +403,9 @@ int n = 0; //the total number of sshits
 	}//for each Hit
  } // for each SSHit
 
-std::cout<<"number of hits = "<<num_total_hits<<", number of sshits = "<<n<<"/"<<sshitHandle->size()<<", number of matches = "<<_hitlist.size()<<std::endl;
+fnum_total_matched_hits = _hitlist.size();
+fratio_total_sshits_hits = (double)fnum_total_sshits/fnum_total_hits;
+std::cout<<"number of hits = "<<fnum_total_hits<<", number of sshits = "<<n<<"/"<<fnum_total_sshits<<", number of matches = "<<fnum_total_matched_hits<<std::endl;
 fmytree->Fill();
  
 /*
