@@ -617,21 +617,23 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			 const std::vector<art::Ptr<recob::Hit> > trk_hit_v = trk_hit_assn_v.at(trk_index);
 			std::cout<<"the number of hits in the track = "<<trk_hit_v.size()<<std::endl;		 
 			
-/*			//for each hit
+			//for each hit
 			 for (size_t h=0; h < trk_hit_v.size(); h++){
-			 	auto const& this_hit = (trk_hit_v.at(h));
+			 	auto const hit = *(trk_hit_v.at(h));
+				const recob::Hit* this_hit = &hit;
 				//float this_channel = this_hit.Channel();
 				
 				//if the peak time is in the hit map, remove the shrhits from the map
 				for (auto const& item : _hitlist){
 					//_hitmap.erase(this_time);
-					if(this_hit == std::get<0>(item)){
+					auto const stored_hit = (std::get<0>(item));
+					if(matches(this_hit, stored_hit)== true){
 						number_matched_trk_hits++;
 					}
 				}
 
 			}//for each hit
-*/
+
 		//std::cout<<"number of remaining matched shr hits = "<<_hitmap.size()<<std::endl;
 		std::cout<<"the number of matched shr hits in the track = "<<number_matched_trk_hits<<std::endl;
 		}//if the tracks match
