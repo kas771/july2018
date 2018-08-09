@@ -57,7 +57,8 @@
 namespace{
 double DetectorDiagonal(geo::GeometryCore const& geom);
 bool matches(const recob::Hit* Hit, const recob::Hit* ssHit);
-bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit* hit);
+double distToVtx(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit*  hit);
+bool inROI(double radius, double dist);
 //double getRadius(double rad_in_cm);
 }
 
@@ -174,6 +175,7 @@ namespace example {
     // The n-tuples we'll create.
     TTree* fmytree;     ///< tuple with information about all events
     TTree* fselectTree; ///< contains information about 1 track 1 shower events
+    TTree* fROITree; ///<contains information about sshits inside the ROI
 
     // The variables that will go into the n-tuple.
     int fEvent;     ///< number of the event being processed
@@ -185,7 +187,8 @@ namespace example {
 
     int fTPC;        ///the TPC ID
     int fCryostat;   ///the cryostat ID
-
+    int total_num_vertices; ///equivalent to number of ROI's in file
+    
     Float_t _xpos, _ypos, _zpos; // xyz of vertex
 
     double fStartXYZT[4]; ///< (x,y,z,t) of the true start of the particle
@@ -208,7 +211,8 @@ namespace example {
     int fnum_hits_track; //number of hits in a track
     double fratio_hits_track; //ratio of sshits to hits in a track
 
-
+    double fradial_dist_sshit_vtx; //the distance of each sshit in ROI to the vertex (shower removed)
+    
     //int fnum_sshits_ROI_with_shower; 
  
     geo::GeometryCore const* fGeometry; 
@@ -270,6 +274,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     std::cout<<"the cryostat id = "<<fCryostat<<std::endl;  
     std::cout<<"the tpc id = "<<fTPC<<std::endl;  
 
+    total_num_vertices = 0;
 //check that there's only one definition
 /* geo::GeometryCore::TPC_iterator iTPC = (*fGeometry).begin_TPC();  
  auto const end_TPC = (*fGeometry).end_TPC();
@@ -295,6 +300,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     // TTrees. Start with the TTree itself.
     fmytree     = tfs->make<TTree>("SSNetTestSimulation",    "SSNetTestSimulation");
     fselectTree = tfs->make<TTree>("SSNetTestSelectTopologies",    "SSNetTestSelectTopologies");
+    fROITree = tfs->make<TTree>("SSNetTestROI",    "SSNetTestROI");
 
     // Define the branches (columns) of our simulation n-tuple. When
     // we write a variable, we give the address of the variable to
@@ -340,6 +346,8 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     fselectTree->Branch("num_sshits_track", &fnum_sshits_track,   "num_sshits_track/I");
     fselectTree->Branch("num_hits_track", &fnum_hits_track,   "num_hits_track/I");
     fselectTree->Branch("ratio_hits_track", &fratio_hits_track,   "ratio_hits_track/D");
+
+    fROITree->Branch("radial_dist_sshit_vtx", &fradial_dist_sshit_vtx, "radial_dist_sshit_vtx/D");
 
 }   
   //-----------------------------------------------------------------------
@@ -691,10 +699,12 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 		for(auto const& item : _hitlist){
 			//if the sshit falls inside the ROI
 			auto const this_sshit = std::get<1>(item);
-			if (inROI(fTimeToCMConstant, fWireToCMConstant, fRadius, time, wire, this_sshit) == true){
+			double dist = distToVtx(fTimeToCMConstant, fWireToCMConstant, fRadius, time, wire, this_sshit);
+			if (inROI(fRadius, dist) == true){
 				//add the sshit to the map for this vertex
 				_ROIhitlist.push_back(item);
-
+				fradial_dist_sshit_vtx = dist;
+				fROITree->Fill();	
 			} //if in ROI
 		}//each sshit
 
@@ -703,10 +713,12 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	}//for each plane
 fnum_sshits_ROI_no_shower = _ROIhitlist.size();
 std::cout<<"the number of shower hits within the ROI is after removing matched =  "<<fnum_sshits_ROI_no_shower<<std::endl;
-fmytree->Fill();
+fselectTree->Fill();
 
 }//loop over vertices
 
+total_num_vertices+= my_vtxs.size();
+std::cout<<"the number processed ROI's in file = "<<total_num_vertices<<std::endl;
 
  auto particleHandle
       = event.getValidHandle<std::vector<simb::MCParticle>>
@@ -862,8 +874,8 @@ namespace {
 }
 
 //takes the plane and 2D vertex position and pointer to a 3D hit
-//returns true if the hit is within the radius of the vertex, false otherwise  
-bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit*  hit){
+//returns the radial distance in cm of the hit from the vertex in cm
+double distToVtx(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit*  hit){
 	double hit_time = (*hit).PeakTime();
 	double hit_wire = (*hit).WireID().Wire;
 	double diff_t = hit_time - vertex_time;
@@ -875,9 +887,13 @@ bool inROI(double fTimeToCMConstant, double fWireToCMConstant, double radius, do
 	
 	//calc dist from vertex
 	double dist_from_vtx = (diff_t*diff_t) + (diff_w*diff_w);
-	
-	//if within ROI radius
-	if(dist_from_vtx <= radius){
+	return dist_from_vtx;
+}//distToVtx
+
+//takes the distance to the vertex of a hit on a given plane and the radius
+//returns true if hit is in ROI, false otherwise
+bool inROI(double radius, double dist ){
+	if(dist <= radius){
 	//	std::cout<<"matched sshit at ("<<hit_time<<", "<<hit_wire<<")"<<std::endl;
 //		std::cout<<"the distance from the vertex is "<<dist_from_vtx<<std::endl;
 		return true;
