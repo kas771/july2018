@@ -196,7 +196,11 @@ namespace example {
     int fnum_total_sshits; //the total number of sshits
     int fnum_total_matched_hits; //the total number of matched sshits
     double fratio_total_sshits_hits; //the total number of sshits over total number of hits
-    //int fnum_sshits_ROI_no_shower;
+    int fnum_sshits_ROI_no_shower; //total number of sshits within each ROI once the shower is removed
+    int fnum_sshits_shower; //number of sshits in a shower
+    int fnum_hits_shower; //number of hits in a shower
+    double fratio_hits_shower; //ratio of sshits to hits in a shower
+
     //int fnum_sshits_ROI_with_shower; 
  
     geo::GeometryCore const* fGeometry; 
@@ -308,9 +312,12 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     fmytree->Branch("total_sshits", &fnum_total_sshits,   "total_sshits/I");
     fmytree->Branch("total_matched_hits", &fnum_total_matched_hits,   "total_matched_hits/I");
     fmytree->Branch("ratio_total_sshits_hits", &fratio_total_sshits_hits,   "ratio_total_sshits_hits/D");
-}
+    fmytree->Branch("num_sshits_ROI_no_shower", &fnum_sshits_ROI_no_shower,   "num_sshits_ROI_no_shower/I");
+    fmytree->Branch("num_sshits_shower", &fnum_sshits_shower,   "num_sshits_shower/I");
+    fmytree->Branch("num_hits_shower", &fnum_hits_shower,   "num_hits_shower/I");
+    fmytree->Branch("ratio_hits_shower", &fratio_hits_shower,   "ratio_hits_shower/D");
 
-   
+}   
   //-----------------------------------------------------------------------
   void SSNetTest::beginRun(const art::Run& /*run*/)
   {
@@ -535,7 +542,8 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			 //get the associated hits for the shower
 			 //const std::vector<art::Ptr<recob::Hit> > shr_hit_v = shr_hit_assn_v.at(shr_index);
 			 auto shr_hit_v = shr_hit_assn_v.at(shr_index);
-			std::cout<<"the number of hits in the shower = "<<shr_hit_v.size()<<std::endl;		 
+			fnum_hits_shower = shr_hit_v.size();
+			std::cout<<"the number of hits in the shower = "<<fnum_hits_shower<<std::endl;		 
 			int num_sshit_in_shower = 0;
 			
 			//for each hit
@@ -555,10 +563,16 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 				}
 
 			}//for each hit
-			
+			fnum_sshits_shower = num_sshit_in_shower;
+			if (num_sshit_in_shower > 300){
+				std::cout<<"warning, very large number of sshits"<<std::endl;
+			}
 			std::cout<<"number of remaining matched shr hits = "<<_hitlist.size()<<std::endl;
-			std::cout<<"the number of sshits in the shower = "<<num_sshit_in_shower<<std::endl;
-
+			std::cout<<"the number of sshits in the shower = "<<fnum_sshits_shower<<std::endl;
+			
+			fratio_hits_shower = (double)fnum_sshits_shower/fnum_hits_shower;
+			std::cout<<"the ratio of sshits to hits is "<<fratio_hits_shower<<std::endl;
+			fmytree->Fill();
 		}//if the showers match
 	
 	}//for each shower from a 1 shower 1 track topology 
@@ -657,8 +671,10 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 		//std::cout<<"ending plane "<<plane<<std::endl;
 
 	}//for each plane
+fnum_sshits_ROI_no_shower = _ROIhitlist.size();
+std::cout<<"the number of shower hits within the ROI is after removing matched =  "<<fnum_sshits_ROI_no_shower<<std::endl;
+fmytree->Fill();
 
-std::cout<<"the number of shower hits within the ROI is after removing matched =  "<<_ROIhitlist.size()<<std::endl;
 }//loop over vertices
 
 
