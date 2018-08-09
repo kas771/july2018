@@ -172,7 +172,8 @@ namespace example {
     TH1D* fTrackLengthHist; ///< true length [cm] of all selected particles
 
     // The n-tuples we'll create.
-    TTree* fmytree;     ///< tuple with simulated data
+    TTree* fmytree;     ///< tuple with information about all events
+    TTree* fselectTree; ///< contains information about 1 track 1 shower events
 
     // The variables that will go into the n-tuple.
     int fEvent;     ///< number of the event being processed
@@ -196,10 +197,17 @@ namespace example {
     int fnum_total_sshits; //the total number of sshits
     int fnum_total_matched_hits; //the total number of matched sshits
     double fratio_total_sshits_hits; //the total number of sshits over total number of hits
+    
     int fnum_sshits_ROI_no_shower; //total number of sshits within each ROI once the shower is removed
+    
     int fnum_sshits_shower; //number of sshits in a shower
     int fnum_hits_shower; //number of hits in a shower
     double fratio_hits_shower; //ratio of sshits to hits in a shower
+
+    int fnum_sshits_track; //number of sshits in a track
+    int fnum_hits_track; //number of hits in a track
+    double fratio_hits_track; //ratio of sshits to hits in a track
+
 
     //int fnum_sshits_ROI_with_shower; 
  
@@ -286,6 +294,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     // Define our n-tuples, which are limited forms of ROOT
     // TTrees. Start with the TTree itself.
     fmytree     = tfs->make<TTree>("SSNetTestSimulation",    "SSNetTestSimulation");
+    fselectTree = tfs->make<TTree>("SSNetTestSelectTopologies",    "SSNetTestSelectTopologies");
 
     // Define the branches (columns) of our simulation n-tuple. When
     // we write a variable, we give the address of the variable to
@@ -312,10 +321,25 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     fmytree->Branch("total_sshits", &fnum_total_sshits,   "total_sshits/I");
     fmytree->Branch("total_matched_hits", &fnum_total_matched_hits,   "total_matched_hits/I");
     fmytree->Branch("ratio_total_sshits_hits", &fratio_total_sshits_hits,   "ratio_total_sshits_hits/D");
-    fmytree->Branch("num_sshits_ROI_no_shower", &fnum_sshits_ROI_no_shower,   "num_sshits_ROI_no_shower/I");
+   
+/*
+     fmytree->Branch("num_sshits_ROI_no_shower", &fnum_sshits_ROI_no_shower,   "num_sshits_ROI_no_shower/I");
     fmytree->Branch("num_sshits_shower", &fnum_sshits_shower,   "num_sshits_shower/I");
     fmytree->Branch("num_hits_shower", &fnum_hits_shower,   "num_hits_shower/I");
     fmytree->Branch("ratio_hits_shower", &fratio_hits_shower,   "ratio_hits_shower/D");
+    
+    fmytree->Branch("num_sshits_track", &fnum_sshits_track,   "num_sshits_track/I");
+    fmytree->Branch("num_hits_track", &fnum_hits_track,   "num_hits_track/I");
+    fmytree->Branch("ratio_hits_track", &fratio_hits_track,   "ratio_hits_track/D");
+*/
+    fselectTree->Branch("num_sshits_ROI_no_shower", &fnum_sshits_ROI_no_shower,   "num_sshits_ROI_no_shower/I");
+    fselectTree->Branch("num_sshits_shower", &fnum_sshits_shower,   "num_sshits_shower/I");
+    fselectTree->Branch("num_hits_shower", &fnum_hits_shower,   "num_hits_shower/I");
+    fselectTree->Branch("ratio_hits_shower", &fratio_hits_shower,   "ratio_hits_shower/D");
+    
+    fselectTree->Branch("num_sshits_track", &fnum_sshits_track,   "num_sshits_track/I");
+    fselectTree->Branch("num_hits_track", &fnum_hits_track,   "num_hits_track/I");
+    fselectTree->Branch("ratio_hits_track", &fratio_hits_track,   "ratio_hits_track/D");
 
 }   
   //-----------------------------------------------------------------------
@@ -527,6 +551,7 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
  * Remove shrhits matched with hits in the shower and look at shrhits matched to the track
  */
 
+
 //std::cout<<"checking shower"<<std::endl;
 //if(showerHandle->size() != 0) { //skip events with no shower
   for ( size_t shr_index = 0; shr_index != showerHandle->size(); ++shr_index ){
@@ -564,6 +589,7 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 
 			}//for each hit
 			fnum_sshits_shower = num_sshit_in_shower;
+
 			if (num_sshit_in_shower > 300){
 				std::cout<<"warning, very large number of sshits"<<std::endl;
 			}
@@ -571,8 +597,8 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			std::cout<<"the number of sshits in the shower = "<<fnum_sshits_shower<<std::endl;
 			
 			fratio_hits_shower = (double)fnum_sshits_shower/fnum_hits_shower;
-			std::cout<<"the ratio of sshits to hits is "<<fratio_hits_shower<<std::endl;
-			fmytree->Fill();
+			//std::cout<<"the ratio of sshits to hits is "<<fratio_hits_shower<<std::endl;
+	//		fselectTree->Fill();
 		}//if the showers match
 	
 	}//for each shower from a 1 shower 1 track topology 
@@ -598,7 +624,8 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			
 			 //get the associated hits for the track
 			 const std::vector<art::Ptr<recob::Hit> > trk_hit_v = trk_hit_assn_v.at(trk_index);
-			std::cout<<"the number of hits in the track = "<<trk_hit_v.size()<<std::endl;		 
+			fnum_hits_track = trk_hit_v.size();
+			std::cout<<"the number of hits in the track = "<<fnum_hits_track<<std::endl;		 
 			
 			//for each hit
 			 for (size_t h=0; h < trk_hit_v.size(); h++){
@@ -616,10 +643,13 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 				}
 
 			}//for each hit
-
-			//std::cout<<"number of remaining matched shr hits = "<<_hitmap.size()<<std::endl;
-			std::cout<<"the number of matched shr hits in the track = "<<number_matched_trk_hits<<std::endl;
+		fnum_sshits_track = number_matched_trk_hits;
+		fratio_hits_track = (double)fnum_sshits_track/fnum_hits_track;
+		fselectTree->Fill();	
+	
+		std::cout<<"the number of matched shr hits in the track = "<<number_matched_trk_hits<<std::endl;
 		}//if the tracks match
+		
 	}//for each track from a 1 shower 1 track topology 
 }//for each track
 
