@@ -59,6 +59,9 @@ double DetectorDiagonal(geo::GeometryCore const& geom);
 bool matches(const recob::Hit* Hit, const recob::Hit* ssHit);
 double distToVtx(double fTimeToCMConstant, double fWireToCMConstant, double radius, double vertex_time, double vertex_wire, const recob::Hit*  hit);
 bool inROI(double radius, double dist);
+double calcWire(double Y, double Z, int plane, int fTPC, int fCryostat, geo::GeometryCore const& geo );
+TVector3 findEnd(TVector3* shower_start, double* shower_length, TVector3* shower_dir);
+double calcTime(double X,int plane,int fTPC,int fCryostat, detinfo::DetectorProperties const& detprop);
 //double getRadius(double rad_in_cm);
 }
 
@@ -218,8 +221,9 @@ namespace example {
     geo::GeometryCore const* fGeometry; 
 
     //stuff to do the vertex to plane mapping
-    art::ServiceHandle<geo::Geometry>  geo;
-    detinfo::DetectorProperties const* detprop;    
+   // art::ServiceHandle<geo::Geometry>  geo;
+  //  geo::Geometry const* fGeo;
+    detinfo::DetectorProperties const* fDetprop;    
 
  }; // class SSNetTest
 
@@ -251,9 +255,10 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
   {
     // get a pointer to the geometry service provider
      fGeometry = lar::providerFrom<geo::Geometry>();
+     //fGeo =  lar::providerFrom<geo::Geometry>();
 
     //get a pointer to the detector properties service provider
-     detprop = lar::providerFrom<detinfo::DetectorPropertiesService>();
+     fDetprop = lar::providerFrom<detinfo::DetectorPropertiesService>();
  }
 
 
@@ -553,7 +558,7 @@ fmytree->Fill();
 	} //for each vertex
 }//for each PFP
 
-std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
+std::cout<<"the number of stored vertices, tracks, and showers = "<<my_vtxs.size()<<", "<<my_trks.size()<<", "<<my_shrs.size()<<std::endl;
 
 /* 
  * Remove shrhits matched with hits in the shower and look at shrhits matched to the track
@@ -562,6 +567,10 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 
 //std::cout<<"checking shower"<<std::endl;
 //if(showerHandle->size() != 0) { //skip events with no shower
+std::vector<TVector3> ShowerDir;
+std::vector<double> ShowerLen;
+std::vector<TVector3> ShowerStart;
+ 
   for ( size_t shr_index = 0; shr_index != showerHandle->size(); ++shr_index ){
 	auto const& shr = showerHandle->at(shr_index);
 	auto const& start  = shr.ShowerStart();
@@ -579,6 +588,17 @@ std::cout<<"the number of stored vertices = "<<my_vtxs.size()<<std::endl;
 			std::cout<<"the number of hits in the shower = "<<fnum_hits_shower<<std::endl;		 
 			int num_sshit_in_shower = 0;
 			
+			auto this_start = current_shr.ShowerStart();
+			ShowerStart.push_back(this_start);
+
+			auto this_len = current_shr.Length();
+			ShowerLen.push_back(this_len);
+
+			auto this_dir = current_shr.Direction();
+			ShowerDir.push_back(this_dir);
+
+			std::cout<<"the shower direction X component = "<<this_dir.X()<<std::endl;
+		
 			//for each hit
 			 for (size_t h=0; h < shr_hit_v.size(); h++){
 			 	auto const hit = *(shr_hit_v.at(h)); //get the hit from the pointer in the vector
@@ -683,6 +703,18 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	
 	// subset of hit <-> sshit pairs within ROI of the vertex
 	std::list<std::pair<const recob::Hit*, const recob::Hit* >>  _ROIhitlist;
+	
+	//get the associated shower direction
+	TVector3 shower_start = ShowerStart.at(vtx_index);
+	double shower_length = ShowerLen.at(vtx_index);
+	TVector3 shower_dir = ShowerDir.at(vtx_index);
+
+	//create shower end point
+	TVector3 shower_end = findEnd(&shower_start, &shower_length, &shower_dir);
+
+	std::cout<<"The shower start is = "<<shower_start.X()<<", "<<shower_start.Y()<<", "<<shower_start.Z()<<std::endl;
+	std::cout<<"The shower length is = "<<shower_length<<std::endl;
+	std::cout<<"The calculated shower end is = "<<shower_end.X()<<", "<<shower_end.Y()<<", "<<shower_end.Z()<<std::endl;
 
 	//for each plane
 	for (int plane = 0; plane <fPlanes; ++plane){	
@@ -691,9 +723,16 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 		//get the wire and time for each plane
 		//grabbed this from lareventdisplay/EventDisplay/RecoBaseDrawer.cxx
 		//int plane = 0;
-		double wire = geo->WireCoordinate(Y, Z, plane, fTPC, fCryostat);
-		double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
+		//double wire = geo->WireCoordinate(Y, Z, plane, fTPC, fCryostat);
+		//double time = detprop->ConvertXToTicks(X, plane, fTPC,fCryostat);
+		//std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
+
+		double wire = calcWire(Y, Z, plane, fTPC, fCryostat, *fGeometry);
+		double time = calcTime(X, plane, fTPC,fCryostat, *fDetprop);
 		std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
+
+		//TVector2 shower_start_plane = ;
+		//TVector2 shower_end_plane = ;
 
 		//for each remaining sshit
 		for(auto const& item : _hitlist){
@@ -701,9 +740,11 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 			auto const this_sshit = std::get<1>(item);
 			double dist = distToVtx(fTimeToCMConstant, fWireToCMConstant, fRadius, time, wire, this_sshit);
 			if (inROI(fRadius, dist) == true){
-				//add the sshit to the map for this vertex
+			//	if(_ROIhitlist.size() < 3){
+			//		std::cout<<"corresponding shower dir x = "<<shower_dir.X()<<std::endl;
+			//	}
 				_ROIhitlist.push_back(item);
-				fradial_dist_sshit_vtx = dist;
+                                fradial_dist_sshit_vtx = dist;
 				fROITree->Fill();	
 			} //if in ROI
 		}//each sshit
@@ -901,6 +942,36 @@ bool inROI(double radius, double dist ){
 		return false;
 	}
 }//inROI
+
+//given the shower start, direction, and length, calculates an approximate end point in 3D
+TVector3 findEnd(TVector3* shower_start, double* shower_length, TVector3* shower_dir){
+	//scale the direction by the length
+	TVector3 scaled_dir = (*shower_length) * (*shower_dir);
+
+	//add it to the start
+	TVector3 end = (*shower_start)+scaled_dir;
+	return end;
+}
+
+
+//takes Y and Z  coord in cm for a 3D spacepoint and returns the wire coord for a given plane
+double calcWire(double Y, double Z, int plane, int fTPC, int fCryostat, geo::GeometryCore const& geo ){
+	double wire = geo.WireCoordinate(Y, Z, plane, fTPC, fCryostat);
+	return wire;
+}
+
+//takes X coord for a 3D spacepoint and returns the time coord for a given plane
+double calcTime(double X,int plane,int fTPC,int fCryostat, detinfo::DetectorProperties const& detprop){
+	double time = detprop.ConvertXToTicks(X, plane, fTPC,fCryostat);
+	return time;
+}
+
+//for a given plane, takes shower end points (2D projected) and then calculates angle
+//between vector from vertex to hit and the shower
+//double angleFromShower(TVector2* shower_start, TVector2* shower_end, const recob::Hit*  hit, double vertex_time, double vertex_wire){
+// 	double hit_time = (*hit).PeakTime();
+//        double hit_wire = (*hit).WireID().Wire;	
+//}
 
 
 //converts radius for ROI in units of time and wire from sm
