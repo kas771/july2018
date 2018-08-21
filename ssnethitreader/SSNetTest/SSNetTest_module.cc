@@ -217,7 +217,8 @@ namespace example {
     double fratio_hits_track; //ratio of sshits to hits in a track
 
     double fradial_dist_sshit_vtx; //the distance of each sshit in ROI to the vertex (shower removed)
-    
+    double fopening_angle_shower_sshit; //the angle on each plane between the shower direction and the vtx-sshit
+	 
     //int fnum_sshits_ROI_with_shower; 
  
     geo::GeometryCore const* fGeometry; 
@@ -345,7 +346,7 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     fmytree->Branch("num_hits_track", &fnum_hits_track,   "num_hits_track/I");
     fmytree->Branch("ratio_hits_track", &fratio_hits_track,   "ratio_hits_track/D");
 */
-    fselectTree->Branch("num_sshits_ROI_no_shower", &fnum_sshits_ROI_no_shower,   "num_sshits_ROI_no_shower/I");
+    fROITree->Branch("num_sshits_ROI_no_shower", &fnum_sshits_ROI_no_shower,   "num_sshits_ROI_no_shower/I");
     fselectTree->Branch("num_sshits_shower", &fnum_sshits_shower,   "num_sshits_shower/I");
     fselectTree->Branch("num_hits_shower", &fnum_hits_shower,   "num_hits_shower/I");
     fselectTree->Branch("ratio_hits_shower", &fratio_hits_shower,   "ratio_hits_shower/D");
@@ -355,6 +356,8 @@ SSNetTest::SSNetTest(Parameters const& config) // Initialize member data here.
     fselectTree->Branch("ratio_hits_track", &fratio_hits_track,   "ratio_hits_track/D");
 
     fROITree->Branch("radial_dist_sshit_vtx", &fradial_dist_sshit_vtx, "radial_dist_sshit_vtx/D");
+    fROITree->Branch("fopening_angle_shower_sshit", &fopening_angle_shower_sshit, "opening_angle_shower_sshit/D");
+
 
 }   
   //-----------------------------------------------------------------------
@@ -750,7 +753,7 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 			//	}
 				_ROIhitlist.push_back(item);
                                 fradial_dist_sshit_vtx = dist;
-				double angle = angleFromShower(shower_direction_plane, this_sshit, time,wire);
+				fopening_angle_shower_sshit = angleFromShower(shower_direction_plane, this_sshit, time,wire);
 				//std::cout<<"the angle from the shower is "<<angle<<std::endl;
 				
 				fROITree->Fill();	
