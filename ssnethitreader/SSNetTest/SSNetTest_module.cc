@@ -62,6 +62,8 @@ bool inROI(double radius, double dist);
 double calcWire(double Y, double Z, int plane, int fTPC, int fCryostat, geo::GeometryCore const& geo );
 TVector3 findEnd(TVector3* shower_start, double* shower_length, TVector3* shower_dir);
 double calcTime(double X,int plane,int fTPC,int fCryostat, detinfo::DetectorProperties const& detprop);
+TVector2 calcNormVec(TVector2 shower_start_plane,TVector2 shower_end_plane);
+double angleFromShower(TVector2 shower_direction_plane, const recob::Hit*  hit, double vertex_time, double vertex_wire);
 //double getRadius(double rad_in_cm);
 }
 
@@ -731,9 +733,12 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 		double time = calcTime(X, plane, fTPC,fCryostat, *fDetprop);
 		std::cout<<"the time and wire on plane "<<plane<<" is ("<<time<<", "<<wire<<")"<<std::endl;
 
-		//TVector2 shower_start_plane = ;
-		//TVector2 shower_end_plane = ;
+		TVector2 shower_start_plane = TVector2(calcTime(shower_start.X(), plane, fTPC,fCryostat, *fDetprop), calcWire(shower_start.Y(), shower_start.Z(), plane, fTPC, fCryostat, *fGeometry));	
+		TVector2 shower_end_plane =  TVector2(calcTime(shower_end.X(), plane, fTPC,fCryostat, *fDetprop), calcWire(shower_end.Y(), shower_end.Z(), plane, fTPC, fCryostat, *fGeometry));
 
+		TVector2 shower_direction_plane = calcNormVec(shower_start_plane, shower_end_plane); 
+		
+		//std::cout<<"the direction of the shower on this plane is "<< shower_direction_plane.X() <<" starting and ending from "<< shower_start_plane.X()<<shower_end_plane.X() <<std::endl;
 		//for each remaining sshit
 		for(auto const& item : _hitlist){
 			//if the sshit falls inside the ROI
@@ -745,6 +750,9 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 			//	}
 				_ROIhitlist.push_back(item);
                                 fradial_dist_sshit_vtx = dist;
+				double angle = angleFromShower(shower_direction_plane, this_sshit, time,wire);
+				//std::cout<<"the angle from the shower is "<<angle<<std::endl;
+				
 				fROITree->Fill();	
 			} //if in ROI
 		}//each sshit
@@ -754,7 +762,7 @@ for ( size_t vtx_index = 0; vtx_index != my_vtxs.size(); ++vtx_index ){
 	}//for each plane
 fnum_sshits_ROI_no_shower = _ROIhitlist.size();
 std::cout<<"the number of shower hits within the ROI is after removing matched =  "<<fnum_sshits_ROI_no_shower<<std::endl;
-fselectTree->Fill();
+fROITree->Fill();
 
 }//loop over vertices
 
@@ -966,12 +974,27 @@ double calcTime(double X,int plane,int fTPC,int fCryostat, detinfo::DetectorProp
 	return time;
 }
 
+//takes 2 vectors and returns normalized vector between them pointing from start to end
+TVector2 calcNormVec(TVector2 shower_start_plane,TVector2 shower_end_plane){
+	TVector2 diff = shower_end_plane - shower_start_plane;
+	return diff.Unit();
+}
+
 //for a given plane, takes shower end points (2D projected) and then calculates angle
 //between vector from vertex to hit and the shower
-//double angleFromShower(TVector2* shower_start, TVector2* shower_end, const recob::Hit*  hit, double vertex_time, double vertex_wire){
-// 	double hit_time = (*hit).PeakTime();
-//        double hit_wire = (*hit).WireID().Wire;	
-//}
+double angleFromShower(TVector2 shower_direction_plane, const recob::Hit*  hit, double vertex_time, double vertex_wire){
+ 	double hit_time = (*hit).PeakTime();
+        double hit_wire = (*hit).WireID().Wire;	
+
+	TVector2 this_hit = TVector2(hit_time, hit_wire);
+	TVector2 this_vertex = TVector2(vertex_time, vertex_wire);
+
+	TVector2 hit_vtx_direction_plane = calcNormVec(this_vertex, this_hit);
+
+	double opening_angle = hit_vtx_direction_plane.Phi() - shower_direction_plane.Phi();
+	return opening_angle;
+	
+}
 
 
 //converts radius for ROI in units of time and wire from sm
